@@ -14,7 +14,7 @@ export function ThemeToggle() {
       className="text-sidebar-foreground/80 hover:text-sidebar-foreground inline-flex size-9 items-center justify-center rounded-md hover:bg-white/10"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
-      <Icons.sun className="block size-4 dark:hidden" />
+      <Icons.sun className="size-4 dark:hidden" />
       <Icons.moon className="hidden size-4 dark:block" />
     </button>
   );
