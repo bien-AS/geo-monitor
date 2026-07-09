@@ -273,7 +273,7 @@ function NavItem({
 export function Sidebar({ locations }: { locations: LocationNavItem[] }) {
   const pathname = usePathname();
   const slug = slugFromPathname(pathname);
-  const { role } = useRole();
+  const role = useRole();
   const user = useCurrentUser();
 
   const defaultSlug = React.useMemo(

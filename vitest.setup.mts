@@ -1,6 +1,11 @@
 import "@testing-library/dom";
 import React from "react";
-import { vi } from "vitest";
+import { vi, afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+
+afterEach(() => {
+  cleanup();
+});
 
 vi.mock("next/image", () => ({
   default: ({
