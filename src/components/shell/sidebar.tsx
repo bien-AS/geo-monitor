@@ -3,32 +3,10 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Building2,
-  CalendarDays,
-  ClipboardCheck,
-  GraduationCap,
-  LayoutDashboard,
-  ListChecks,
-  LogOut,
-  Map,
-  MessageSquare,
-  Settings,
-  Sparkles,
-  Swords,
-  Tags,
-  Users,
-  History,
-  Bell,
-  FileText,
-  Wallet,
-  FlaskConical,
-  BookUser,
-  NotebookPen,
-  ListTodo,
-} from "lucide-react";
+import { Icons } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { useRole, ROLE_LABEL } from "./role-store";
+import { useCurrentUser } from "@/hooks/use-user";
 import { LocationSelector, slugFromPathname, type LocationNavItem } from "./location-selector";
 
 interface NavEntry {
@@ -50,7 +28,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "dashboard",
     label: "Dashboard",
-    icon: LayoutDashboard,
+    icon: Icons.dashboard,
     href: () => "/local",
     scoped: false,
     match: (p) => p === "/local" || p.startsWith("/local/"),
@@ -58,7 +36,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "overview",
     label: "Overview",
-    icon: Building2,
+    icon: Icons.building,
     href: (s) => `/locations/${s}`,
     scoped: true,
     match: (p, s) => p === `/locations/${s}`,
@@ -66,7 +44,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "geo-grid",
     label: "Geo-Grid",
-    icon: Map,
+    icon: Icons.map,
     href: (s) => `/locations/${s}/geo-grid`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/geo-grid`),
@@ -74,7 +52,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "keywords",
     label: "Keywords",
-    icon: Tags,
+    icon: Icons.tags,
     href: (s) => `/locations/${s}/keywords`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/keywords`),
@@ -82,7 +60,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "gbp-health",
     label: "GBP Health",
-    icon: ClipboardCheck,
+    icon: Icons.clipboardCheck,
     href: (s) => `/locations/${s}/gbp-health`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/gbp-health`),
@@ -90,7 +68,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "citations",
     label: "Citations & NAP",
-    icon: ListChecks,
+    icon: Icons.listChecks,
     href: (s) => `/locations/${s}/citations`,
     scoped: true,
     match: (p, s) =>
@@ -99,7 +77,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "reviews",
     label: "Reviews",
-    icon: MessageSquare,
+    icon: Icons.messageSquare,
     href: (s) => `/locations/${s}/reviews`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/reviews`),
@@ -107,7 +85,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "posts",
     label: "Posts",
-    icon: CalendarDays,
+    icon: Icons.calendarDays,
     href: (s) => `/locations/${s}/posts`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/posts`),
@@ -115,7 +93,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "local-ai",
     label: "Local AI",
-    icon: Sparkles,
+    icon: Icons.sparkles,
     href: (s) => `/locations/${s}/local-ai`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/local-ai`),
@@ -123,7 +101,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "competitive",
     label: "Competitive",
-    icon: Swords,
+    icon: Icons.swords,
     href: (s) => `/locations/${s}/competitive`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/competitive`),
@@ -131,7 +109,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "paa-studio",
     label: "PAA Studio",
-    icon: NotebookPen,
+    icon: Icons.blog,
     href: (s) => `/locations/${s}/paa-studio`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/paa-studio`),
@@ -139,7 +117,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "action-center",
     label: "Action Center",
-    icon: ListTodo,
+    icon: Icons.listTodo,
     href: (s) => `/locations/${s}/action-center`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/action-center`),
@@ -147,7 +125,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "reports",
     label: "Reports",
-    icon: FileText,
+    icon: Icons.fileText,
     href: (s) => `/locations/${s}/reports`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/reports`),
@@ -155,7 +133,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "runs",
     label: "Runs",
-    icon: History,
+    icon: Icons.history,
     href: (s) => `/locations/${s}/runs`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/runs`),
@@ -163,7 +141,7 @@ const LOCAL_NAV: NavEntry[] = [
   {
     key: "profile",
     label: "Location Profile",
-    icon: BookUser,
+    icon: Icons.bookUser,
     href: (s) => `/locations/${s}/profile`,
     scoped: true,
     match: (p, s) => p.startsWith(`/locations/${s}/profile`) || p.startsWith(`/locations/${s}/kb`),
@@ -174,7 +152,7 @@ const SYSTEM_NAV: NavEntry[] = [
   {
     key: "notifications",
     label: "Notifications",
-    icon: Bell,
+    icon: Icons.bell,
     href: () => "/system/notifications",
     scoped: false,
     match: (p) => p.startsWith("/system/notifications"),
@@ -182,7 +160,7 @@ const SYSTEM_NAV: NavEntry[] = [
   {
     key: "settings",
     label: "Settings",
-    icon: Settings,
+    icon: Icons.settings,
     href: () => "/settings",
     scoped: false,
     match: (p) => p === "/settings",
@@ -190,7 +168,7 @@ const SYSTEM_NAV: NavEntry[] = [
   {
     key: "users",
     label: "Users & roles",
-    icon: Users,
+    icon: Icons.usersGroup,
     href: () => "/settings/users",
     scoped: false,
     match: (p) => p.startsWith("/settings/users"),
@@ -198,7 +176,7 @@ const SYSTEM_NAV: NavEntry[] = [
   {
     key: "learn",
     label: "Learning Hub",
-    icon: GraduationCap,
+    icon: Icons.graduationCap,
     href: () => "/learn",
     scoped: false,
     match: (p) => p.startsWith("/learn"),
@@ -209,7 +187,7 @@ const ADMIN_NAV: NavEntry[] = [
   {
     key: "fleet-action-center",
     label: "Fleet Action Center",
-    icon: ListTodo,
+    icon: Icons.listTodo,
     href: () => "/action-center",
     scoped: false,
     match: (p) => p.startsWith("/action-center"),
@@ -217,7 +195,7 @@ const ADMIN_NAV: NavEntry[] = [
   {
     key: "fleet-reports",
     label: "Fleet Reports",
-    icon: FileText,
+    icon: Icons.fileText,
     href: () => "/system/reports",
     scoped: false,
     match: (p) => p.startsWith("/system/reports"),
@@ -225,7 +203,7 @@ const ADMIN_NAV: NavEntry[] = [
   {
     key: "fleet-runs",
     label: "Fleet Runs",
-    icon: History,
+    icon: Icons.history,
     href: () => "/system/runs",
     scoped: false,
     match: (p) => p.startsWith("/system/runs"),
@@ -233,7 +211,7 @@ const ADMIN_NAV: NavEntry[] = [
   {
     key: "spot-check",
     label: "Spot Check",
-    icon: FlaskConical,
+    icon: Icons.flask,
     href: () => "/tools/spot-check",
     scoped: false,
     match: (p) => p.startsWith("/tools/spot-check"),
@@ -241,7 +219,7 @@ const ADMIN_NAV: NavEntry[] = [
   {
     key: "costs",
     label: "Costs",
-    icon: Wallet,
+    icon: Icons.wallet,
     href: () => "/admin/costs",
     scoped: false,
     match: (p) => p.startsWith("/admin/costs"),
@@ -295,9 +273,9 @@ function NavItem({
 export function Sidebar({ locations }: { locations: LocationNavItem[] }) {
   const pathname = usePathname();
   const slug = slugFromPathname(pathname);
-  const role = useRole((s) => s.role);
+  const { role } = useRole();
+  const user = useCurrentUser();
 
-  // First location alphabetically (Zach: never a hardcoded pilot default).
   const defaultSlug = React.useMemo(
     () =>
       [...locations].sort((a, b) => a.name.localeCompare(b.name))[0]?.slug ??
@@ -346,11 +324,11 @@ export function Sidebar({ locations }: { locations: LocationNavItem[] }) {
       <div className="border-sidebar-border border-t p-3">
         <div className="flex items-center gap-2.5">
           <span className="bg-primary-500 flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white">
-            {role === "operator" ? "ZB" : "KW"}
+            {user?.initials ?? "??"}
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sidebar-foreground truncate text-[13px] font-semibold">
-              {role === "operator" ? "Zach B." : "Karen W."}
+              {user?.name ?? "Unknown"}
             </p>
             <span
               className={cn(
@@ -372,7 +350,7 @@ export function Sidebar({ locations }: { locations: LocationNavItem[] }) {
               aria-label="Sign out"
               className="text-sidebar-muted hover:text-sidebar-foreground flex size-8 items-center justify-center rounded-md transition-colors hover:bg-white/10"
             >
-              <LogOut className="size-4" />
+              <Icons.logOut className="size-4" />
             </button>
           </form>
         </div>

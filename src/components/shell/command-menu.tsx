@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Building2, LayoutDashboard, MapPin, Settings, Users, GraduationCap } from "lucide-react";
+import { Icons } from "@/lib/icons";
 import {
   CommandDialog,
   CommandEmpty,
@@ -58,7 +58,7 @@ export function CommandMenu({
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Screens">
           <CommandItem onSelect={() => go("/local")}>
-            <LayoutDashboard className="size-4" />
+            <Icons.dashboard className="size-4" />
             Dashboard
           </CommandItem>
           {current &&
@@ -67,7 +67,7 @@ export function CommandMenu({
                 key={m.suffix || "overview"}
                 onSelect={() => go(`/locations/${current.slug}${m.suffix}`)}
               >
-                <Building2 className="size-4" />
+                <Icons.building className="size-4" />
                 {m.label}
                 <span className="text-text-tertiary ml-auto text-xs">
                   {shortLocationName(current.name)}
@@ -75,15 +75,15 @@ export function CommandMenu({
               </CommandItem>
             ))}
           <CommandItem onSelect={() => go("/settings")}>
-            <Settings className="size-4" />
+            <Icons.settings className="size-4" />
             Settings
           </CommandItem>
           <CommandItem onSelect={() => go("/settings/users")}>
-            <Users className="size-4" />
+            <Icons.usersGroup className="size-4" />
             Users &amp; roles
           </CommandItem>
           <CommandItem onSelect={() => go("/learn")}>
-            <GraduationCap className="size-4" />
+            <Icons.graduationCap className="size-4" />
             Learning Hub
           </CommandItem>
         </CommandGroup>
@@ -95,7 +95,7 @@ export function CommandMenu({
               value={`${loc.name} ${loc.city}`}
               onSelect={() => go(`/locations/${loc.slug}`)}
             >
-              <MapPin className="size-4" />
+              <Icons.mapPin className="size-4" />
               <span className="min-w-0 flex-1 truncate">{shortLocationName(loc.name)}</span>
               <span className="text-text-tertiary text-xs">{loc.city}</span>
             </CommandItem>

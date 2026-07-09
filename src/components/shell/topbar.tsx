@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, ChevronDown, Search, UserRound } from "lucide-react";
+import { Icons } from "@/lib/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,14 +15,10 @@ import {
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CommandMenu } from "./command-menu";
-import { useRole, ROLE_LABEL, type Role } from "./role-store";
+import { useRole, ROLE_LABEL } from "./role-store";
 import { NotificationBell, type BellItem } from "./notification-bell";
+import { useCurrentUser } from "@/hooks/use-user";
 import type { LocationNavItem } from "./location-selector";
-
-const ROLE_DESCRIPTIONS: Record<Role, string> = {
-  operator: "Full access — operate and approve",
-  "client-viewer": "Read-only — what Baptist sees",
-};
 
 export function Topbar({
   locations,
@@ -32,7 +28,8 @@ export function Topbar({
   bellItems?: BellItem[];
 }) {
   const [commandOpen, setCommandOpen] = React.useState(false);
-  const { role, setRole } = useRole();
+  const { role } = useRole();
+  const user = useCurrentUser();
 
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -72,47 +69,16 @@ export function Topbar({
         onClick={() => setCommandOpen(true)}
         className="text-sidebar-muted ml-2 hidden h-9 max-w-[480px] flex-1 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 text-left text-[13px] transition-colors hover:bg-white/10 md:flex"
       >
-        <Search className="size-3.5 shrink-0" />
+        <Icons.search className="size-3.5 shrink-0" />
         <span className="flex-1 truncate">Search locations and screens…</span>
         <kbd className="text-sidebar-muted rounded bg-white/10 px-1.5 py-0.5 font-mono text-[11px]">
-          ⌘K
+          {typeof window !== "undefined" && window.navigator.platform.includes("Mac")
+            ? "⌘K"
+            : "Ctrl+K"}
         </kbd>
       </button>
 
       <div className="ml-auto flex shrink-0 items-center gap-1.5">
-        <DropdownMenu>
-          <DropdownMenuTrigger className="text-sidebar-foreground flex h-9 items-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-2.5 text-[13px] font-medium transition-colors hover:bg-white/10">
-            <span
-              className={cn(
-                "size-2 rounded-full",
-                role === "operator" ? "bg-cyan-400" : "bg-neutral-300",
-              )}
-              aria-hidden
-            />
-            {ROLE_LABEL[role]}
-            <ChevronDown className="text-sidebar-muted size-3.5" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="end"
-            className="w-64"
-          >
-            <DropdownMenuLabel>View as role</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {(Object.keys(ROLE_LABEL) as Role[]).map((r) => (
-              <DropdownMenuItem
-                key={r}
-                onSelect={() => setRole(r)}
-              >
-                <div className="flex-1">
-                  <p className="text-[13px] font-medium">{ROLE_LABEL[r]}</p>
-                  <p className="text-text-tertiary text-xs">{ROLE_DESCRIPTIONS[r]}</p>
-                </div>
-                {role === r && <Check className="text-primary size-4" />}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
         <NotificationBell items={bellItems} />
 
         <ThemeToggle />
@@ -123,7 +89,7 @@ export function Topbar({
             className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-white/10"
           >
             <span className="bg-primary-500 flex size-7 items-center justify-center rounded-full text-[11px] font-semibold text-white">
-              AS
+              {user?.initials ?? "??"}
             </span>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -131,8 +97,8 @@ export function Topbar({
             className="w-56"
           >
             <DropdownMenuLabel>
-              <p className="text-[13px] font-semibold">Agency Operator</p>
-              <p className="text-text-tertiary text-xs font-normal">Baptist Memorial Health Care</p>
+              <p className="text-[13px] font-semibold">{user?.name ?? "Unknown"}</p>
+              <p className="text-text-tertiary text-xs font-normal">{user?.organization ?? ""}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <form
@@ -144,7 +110,7 @@ export function Topbar({
                   type="submit"
                   className="w-full"
                 >
-                  <UserRound className="size-4" />
+                  <Icons.user className="size-4" />
                   Sign out
                 </button>
               </DropdownMenuItem>

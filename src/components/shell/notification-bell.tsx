@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell } from "lucide-react";
+import { Icons } from "@/lib/icons";
 import { useRole } from "./role-store";
 
 export interface BellItem {
@@ -10,7 +10,7 @@ export interface BellItem {
 }
 
 export function NotificationBell({ items }: { items: BellItem[] }) {
-  const role = useRole((s) => s.role);
+  const { role } = useRole();
 
   const unread = items.filter((n) => n.audience === "all" || role === "operator").length;
 
@@ -20,7 +20,7 @@ export function NotificationBell({ items }: { items: BellItem[] }) {
       aria-label={`Notifications — ${unread} unread`}
       className="relative flex size-9 items-center justify-center rounded-md transition-colors hover:bg-white/10"
     >
-      <Bell className="text-sidebar-foreground size-[18px]" />
+      <Icons.bell className="text-sidebar-foreground size-[18px]" />
       {unread > 0 && (
         <span className="bg-error-500 absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 font-mono text-[10px] leading-none font-bold text-white">
           {unread > 9 ? "9+" : unread}

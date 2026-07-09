@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Check, ChevronsUpDown, MapPin } from "lucide-react";
+import { Icons } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import {
   Command,
@@ -58,13 +58,13 @@ export function LocationSelector({
               : "border-border-emphasis bg-card text-foreground hover:bg-secondary",
           )}
         >
-          <MapPin
+          <Icons.mapPin
             className={cn("size-4 shrink-0", isSidebar ? "text-cyan-400" : "text-primary-500")}
           />
           <span className="min-w-0 flex-1 truncate">
             {current ? shortLocationName(current.name) : "All locations"}
           </span>
-          <ChevronsUpDown
+          <Icons.chevronsUpDown
             className={cn(
               "size-3.5 shrink-0",
               isSidebar ? "text-sidebar-muted" : "text-text-tertiary",
@@ -88,7 +88,9 @@ export function LocationSelector({
                   router.push("/local");
                 }}
               >
-                <Check className={cn("size-4", current === null ? "opacity-100" : "opacity-0")} />
+                <Icons.check
+                  className={cn("size-4", current === null ? "opacity-100" : "opacity-0")}
+                />
                 All locations
               </CommandItem>
             </CommandGroup>
@@ -104,7 +106,7 @@ export function LocationSelector({
                     );
                   }}
                 >
-                  <Check
+                  <Icons.check
                     className={cn(
                       "size-4",
                       current?.slug === loc.slug ? "opacity-100" : "opacity-0",

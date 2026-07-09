@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Check, ChevronDown } from "lucide-react";
+import { Icons } from "@/lib/icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,7 +53,7 @@ export function ScopeBanner({
       <DropdownMenu>
         <DropdownMenuTrigger className="text-text-link hover:bg-secondary flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-[13px] font-medium">
           Switch location
-          <ChevronDown className="size-3.5" />
+          <Icons.chevronDown className="size-3.5" />
         </DropdownMenuTrigger>
         <DropdownMenuContent
           align="end"
@@ -66,7 +66,7 @@ export function ScopeBanner({
               key={loc.slug}
               onSelect={() => router.push(pathForLocation(pathname, loc.slug))}
             >
-              <Check
+              <Icons.check
                 className={cn(
                   "size-4 shrink-0",
                   currentSlug === loc.slug ? "opacity-100" : "opacity-0",

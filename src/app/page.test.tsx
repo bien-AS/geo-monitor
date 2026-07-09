@@ -1,10 +1,8 @@
-import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import Page from "./page";
+import Home from "./page";
 
 describe("Home page", () => {
-  it("renders the heading", () => {
-    render(<Page />);
-    expect(screen.getByRole("heading", { name: /as-baptist-local/i })).toBeDefined();
+  it("redirects to /local", () => {
+    expect(() => Home()).toThrow();
   });
 });

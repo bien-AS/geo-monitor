@@ -1,0 +1,8 @@
+export default function StubPage() {
+  return (
+    <div>
+      <h1 className="font-heading text-foreground text-2xl font-bold tracking-tight">PAA Studio</h1>
+      <p className="text-muted-foreground mt-2">PAA Studio coming soon.</p>
+    </div>
+  );
+}

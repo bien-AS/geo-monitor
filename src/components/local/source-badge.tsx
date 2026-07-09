@@ -20,7 +20,7 @@ export function SourceBadge({
   className?: string;
   note?: string;
 }) {
-  const role = useRole((s) => s.role);
+  const { role } = useRole();
   if (role !== "operator") return null;
   if (source === "synthetic") return null;
 
