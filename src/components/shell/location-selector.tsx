@@ -67,7 +67,7 @@ export function LocationSelector({
           <Icons.chevronsUpDown
             className={cn(
               "size-3.5 shrink-0",
-              isSidebar ? "text-sidebar-muted" : "text-text-tertiary",
+              isSidebar ? "text-sidebar-foreground/70" : "text-text-tertiary",
             )}
           />
         </button>

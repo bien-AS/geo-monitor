@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CommandMenu } from "./command-menu";
-import { useRole, ROLE_LABEL } from "./role-store";
+import { RoleSwitcher } from "./role-switcher";
 import { NotificationBell, type BellItem } from "./notification-bell";
 import { useCurrentUser } from "@/hooks/use-user";
 import type { LocationNavItem } from "./location-selector";
@@ -28,7 +28,6 @@ export function Topbar({
   bellItems?: BellItem[];
 }) {
   const [commandOpen, setCommandOpen] = React.useState(false);
-  const role = useRole();
   const user = useCurrentUser();
 
   React.useEffect(() => {
@@ -67,11 +66,11 @@ export function Topbar({
       <button
         type="button"
         onClick={() => setCommandOpen(true)}
-        className="text-sidebar-muted ml-2 hidden h-9 max-w-[480px] flex-1 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 text-left text-[13px] transition-colors hover:bg-white/10 md:flex"
+        className="text-sidebar-foreground/70 ml-2 hidden h-9 max-w-[480px] flex-1 items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 text-left text-[13px] transition-colors hover:bg-white/10 md:flex"
       >
         <Icons.search className="size-3.5 shrink-0" />
         <span className="flex-1 truncate">Search locations and screens…</span>
-        <kbd className="text-sidebar-muted rounded bg-white/10 px-1.5 py-0.5 font-mono text-[11px]">
+        <kbd className="text-sidebar-foreground/70 rounded bg-white/10 px-1.5 py-0.5 font-mono text-[11px]">
           {typeof window !== "undefined" && window.navigator.platform.includes("Mac")
             ? "⌘K"
             : "Ctrl+K"}
@@ -79,6 +78,8 @@ export function Topbar({
       </button>
 
       <div className="ml-auto flex shrink-0 items-center gap-1.5">
+        <RoleSwitcher />
+
         <NotificationBell items={bellItems} />
 
         <ThemeToggle />
