@@ -10,7 +10,7 @@ export interface BellItem {
 }
 
 export function NotificationBell({ items }: { items: BellItem[] }) {
-  const { role } = useRole();
+  const role = useRole();
 
   const unread = items.filter((n) => n.audience === "all" || role === "operator").length;
 

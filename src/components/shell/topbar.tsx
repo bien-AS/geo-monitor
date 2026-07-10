@@ -28,7 +28,7 @@ export function Topbar({
   bellItems?: BellItem[];
 }) {
   const [commandOpen, setCommandOpen] = React.useState(false);
-  const { role } = useRole();
+  const role = useRole();
   const user = useCurrentUser();
 
   React.useEffect(() => {
