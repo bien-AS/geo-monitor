@@ -59,7 +59,6 @@ const BAND_TONE: Record<LVIBand, PillTone> = {
   healthy: "success",
   "at-risk": "warning",
   critical: "error",
-  unknown: "neutral",
 };
 
 /** LVI band pill (component-spec thresholds: 80+/60/30). */
