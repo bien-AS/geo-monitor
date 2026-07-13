@@ -14,6 +14,7 @@ export type AuditLogEntry = {
   role: string;
   demo: boolean;
   source: DataSource;
+  location_slug?: string;
 };
 
 export type BaptistLocation = {
@@ -21,6 +22,7 @@ export type BaptistLocation = {
   name: string;
   city: string;
   state: string;
+  address?: string;
   cid: string | null;
   place_id: string | null;
   lat: number | null;
@@ -28,7 +30,28 @@ export type BaptistLocation = {
   listing_type: "facility" | "department" | "practitioner";
   rating?: { value: number; votes_count: number } | null;
   website?: string | null;
+  phone?: string | null;
+  primary_category?: string;
+  is_claimed?: boolean;
+  work_time?: {
+    timetable?: Record<
+      string,
+      Array<{
+        open: { hour: number; minute?: number };
+        close: { hour: number; minute?: number };
+      }> | null
+    >;
+  };
+  check_url?: string | null;
 };
+
+export interface LocationLVI {
+  value: number;
+  band: LVIBand;
+  delta: number;
+  components: Record<string, number>;
+  spark: number[];
+}
 
 export interface LVIData {
   portfolio: {
@@ -37,7 +60,7 @@ export interface LVIData {
     delta: number;
     spark: number[];
   };
-  locations: Record<string, { value: number; band: LVIBand; delta: number; spark: number[] }>;
+  locations: Record<string, LocationLVI>;
   generated_at: string;
 }
 
@@ -71,6 +94,7 @@ export interface ReviewRow {
   date: string;
   status: string;
   response?: string;
+  sentiment?: string;
 }
 
 export interface ReviewsFixture {
@@ -100,17 +124,66 @@ export interface LocalAIFixture {
   results: LocalAIResult[];
 }
 
+export interface GBPAuditReport {
+  overall_score: number | null;
+  score_grade?: string;
+  gbp_score?: number | null;
+  citation_score?: number | null;
+  is_verified?: boolean;
+}
+
 export interface GBPAuditFixture {
   audit_status: string;
+  source?: DataSource;
+  report?: GBPAuditReport;
+  report_id?: number;
 }
 
 export interface GridPreviewFixture {
   preview: { pin_count: number; keyword_count: number };
 }
 
+export interface GridPin {
+  rank?: number | null;
+}
+
+export interface GridSnapshot {
+  date: string;
+  avg_rank: number | null;
+  pins?: GridPin[];
+}
+
 export interface GeoGridFixture {
   keyword: string;
-  snapshots: Array<{ date: string; avg_rank: number | null }>;
+  source?: DataSource;
+  snapshots: GridSnapshot[];
+}
+
+export interface Competitor {
+  name: string;
+  cid?: string;
+  rating?: number;
+  votes?: number;
+  distance_mi?: number;
+  map_pack_wins?: number;
+  source: DataSource;
+}
+
+export interface CompetitorsFixture {
+  slug: string;
+  source?: DataSource;
+  competitors: Competitor[];
+}
+
+export interface TrackedKeyword {
+  keyword: string;
+  status: "scanned" | "not_scanned";
+}
+
+export interface KeywordsFixture {
+  slug: string;
+  max_keywords: number;
+  keywords: TrackedKeyword[];
 }
 
 export interface AddableCandidate {

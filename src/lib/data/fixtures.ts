@@ -12,6 +12,8 @@ import type {
   GeoGridFixture,
   AuditLogEntry,
   AddableCandidate,
+  CompetitorsFixture,
+  KeywordsFixture,
 } from "@/lib/data/types";
 
 export const STUB_LOCATIONS: LocationNavItem[] = [
@@ -38,6 +40,7 @@ export const DASHBOARD_LOCATIONS: BaptistLocation[] = [
   {
     slug: "baptist-memphis",
     name: "Baptist Memorial Hospital - Memphis",
+    address: "6019 Walnut Grove Rd",
     city: "Memphis",
     state: "TN",
     cid: "11001",
@@ -46,10 +49,26 @@ export const DASHBOARD_LOCATIONS: BaptistLocation[] = [
     lng: -89.9792,
     listing_type: "facility",
     rating: { value: 4.2, votes_count: 1240 },
+    phone: "(901) 226-5000",
+    primary_category: "Hospital",
+    is_claimed: true,
+    work_time: {
+      timetable: {
+        monday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        tuesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        wednesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        thursday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        friday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        saturday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        sunday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+      },
+    },
+    check_url: "https://www.google.com/maps?cid=11001",
   },
   {
     slug: "baptist-collierville",
     name: "Baptist Memorial Hospital - Collierville",
+    address: "1500 W Poplar Ave",
     city: "Collierville",
     state: "TN",
     cid: "11002",
@@ -58,10 +77,26 @@ export const DASHBOARD_LOCATIONS: BaptistLocation[] = [
     lng: -89.6645,
     listing_type: "facility",
     rating: { value: 4.5, votes_count: 890 },
+    phone: "(901) 861-9000",
+    primary_category: "Hospital",
+    is_claimed: true,
+    work_time: {
+      timetable: {
+        monday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        tuesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        wednesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        thursday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        friday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        saturday: [{ open: { hour: 8 }, close: { hour: 17 } }],
+        sunday: [],
+      },
+    },
+    check_url: "https://www.google.com/maps?cid=11002",
   },
   {
     slug: "baptist-desoto",
     name: "Baptist Memorial Hospital - DeSoto",
+    address: "7601 Southcrest Pkwy",
     city: "Southaven",
     state: "MS",
     cid: "11003",
@@ -70,10 +105,26 @@ export const DASHBOARD_LOCATIONS: BaptistLocation[] = [
     lng: -89.9783,
     listing_type: "facility",
     rating: { value: 3.9, votes_count: 560 },
+    phone: "(662) 772-4000",
+    primary_category: "Hospital",
+    is_claimed: true,
+    work_time: {
+      timetable: {
+        monday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        tuesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        wednesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        thursday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        friday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        saturday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        sunday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+      },
+    },
+    check_url: "https://www.google.com/maps?cid=11003",
   },
   {
     slug: "baptist-north-mississippi",
     name: "Baptist Memorial Hospital - North Mississippi",
+    address: "1100 Belk Blvd",
     city: "Oxford",
     state: "MS",
     cid: "11004",
@@ -82,10 +133,26 @@ export const DASHBOARD_LOCATIONS: BaptistLocation[] = [
     lng: -89.5261,
     listing_type: "facility",
     rating: { value: 4.1, votes_count: 420 },
+    phone: "(662) 636-1000",
+    primary_category: "Hospital",
+    is_claimed: true,
+    work_time: {
+      timetable: {
+        monday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        tuesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        wednesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        thursday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        friday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        saturday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        sunday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+      },
+    },
+    check_url: "https://www.google.com/maps?cid=11004",
   },
   {
     slug: "baptist-golden-triangle",
     name: "Baptist Memorial Hospital - Golden Triangle",
+    address: "2520 5th St N",
     city: "Columbus",
     state: "MS",
     cid: "11005",
@@ -94,8 +161,33 @@ export const DASHBOARD_LOCATIONS: BaptistLocation[] = [
     lng: -88.4273,
     listing_type: "facility",
     rating: { value: 3.7, votes_count: 310 },
+    phone: "(662) 244-1000",
+    primary_category: "Hospital",
+    is_claimed: true,
+    work_time: {
+      timetable: {
+        monday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        tuesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        wednesday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        thursday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        friday: [{ open: { hour: 0 }, close: { hour: 24 } }],
+        saturday: [{ open: { hour: 8 }, close: { hour: 12 } }],
+        sunday: [],
+      },
+    },
+    check_url: "https://www.google.com/maps?cid=11005",
   },
 ];
+
+function makeLVI(
+  value: number,
+  band: "elite" | "healthy" | "at-risk" | "critical",
+  delta: number,
+  spark: number[],
+  components: Record<string, number>,
+) {
+  return { value, band, delta, spark, components } as const;
+}
 
 export const DASHBOARD_LVI: LVIData = {
   generated_at: "2026-07-10",
@@ -106,26 +198,61 @@ export const DASHBOARD_LVI: LVIData = {
     spark: [58, 60, 59, 61, 63, 64],
   },
   locations: {
-    "baptist-memphis": { value: 72, band: "healthy", delta: 4, spark: [64, 66, 68, 70, 71, 72] },
-    "baptist-collierville": {
-      value: 78,
-      band: "healthy",
-      delta: 2,
-      spark: [72, 73, 75, 77, 78, 78],
-    },
-    "baptist-desoto": { value: 55, band: "at-risk", delta: -3, spark: [60, 58, 57, 56, 55, 55] },
-    "baptist-north-mississippi": {
-      value: 62,
-      band: "healthy",
-      delta: 5,
-      spark: [52, 54, 55, 58, 60, 62],
-    },
-    "baptist-golden-triangle": {
-      value: 41,
-      band: "at-risk",
-      delta: -2,
-      spark: [45, 44, 43, 42, 41, 41],
-    },
+    "baptist-memphis": makeLVI(72, "healthy", 4, [64, 66, 68, 70, 71, 72], {
+      geo_grid_rank: 82,
+      gbp_health: 78,
+      review_health: 75,
+      review_response: 65,
+      nap_integrity: 88,
+      citation_coverage: 72,
+      local_ai_citation: 55,
+      posts_cadence: 60,
+      photo_freshness: 70,
+    }),
+    "baptist-collierville": makeLVI(78, "healthy", 2, [72, 73, 75, 77, 78, 78], {
+      geo_grid_rank: 85,
+      gbp_health: 82,
+      review_health: 88,
+      review_response: 72,
+      nap_integrity: 90,
+      citation_coverage: 68,
+      local_ai_citation: 60,
+      posts_cadence: 65,
+      photo_freshness: 75,
+    }),
+    "baptist-desoto": makeLVI(55, "at-risk", -3, [60, 58, 57, 56, 55, 55], {
+      geo_grid_rank: 48,
+      gbp_health: 55,
+      review_health: 58,
+      review_response: 42,
+      nap_integrity: 45,
+      citation_coverage: 52,
+      local_ai_citation: 40,
+      posts_cadence: 35,
+      photo_freshness: 50,
+    }),
+    "baptist-north-mississippi": makeLVI(62, "healthy", 5, [52, 54, 55, 58, 60, 62], {
+      geo_grid_rank: 58,
+      gbp_health: 65,
+      review_health: 62,
+      review_response: 55,
+      nap_integrity: 72,
+      citation_coverage: 60,
+      local_ai_citation: 48,
+      posts_cadence: 50,
+      photo_freshness: 55,
+    }),
+    "baptist-golden-triangle": makeLVI(41, "at-risk", -2, [45, 44, 43, 42, 41, 41], {
+      geo_grid_rank: 32,
+      gbp_health: 40,
+      review_health: 45,
+      review_response: 38,
+      nap_integrity: 25,
+      citation_coverage: 35,
+      local_ai_citation: 30,
+      posts_cadence: 28,
+      photo_freshness: 35,
+    }),
   },
 };
 
@@ -235,6 +362,7 @@ const DASHBOARD_REVIEWS_BASE = {
       status: "answered",
       response:
         "Thank you for your kind words, James. We're glad your experience with our orthopedic team was positive.",
+      sentiment: "positive",
     },
     {
       id: "r2",
@@ -243,6 +371,7 @@ const DASHBOARD_REVIEWS_BASE = {
       text: "Waited over 2 hours past my appointment time. No one communicated what was happening.",
       date: "2026-07-05",
       status: "handoff",
+      sentiment: "critical",
     },
     {
       id: "r3",
@@ -251,6 +380,7 @@ const DASHBOARD_REVIEWS_BASE = {
       text: "Good experience overall. The nursing staff was attentive and the facility is clean.",
       date: "2026-07-02",
       status: "answered",
+      sentiment: "positive",
     },
     {
       id: "r4",
@@ -259,6 +389,7 @@ const DASHBOARD_REVIEWS_BASE = {
       text: "Billing department is impossible to reach. Been trying to resolve an incorrect charge for 3 weeks.",
       date: "2026-06-28",
       status: "unanswered",
+      sentiment: "critical",
     },
   ],
 };
@@ -301,6 +432,7 @@ export const DASHBOARD_REVIEWS: Record<string, ReviewsFixture> = {
         text: "Extremely disappointed. The referral process took forever and the front desk was rude.",
         date: "2026-07-07",
         status: "handoff",
+        sentiment: "critical",
       },
     ],
   },
@@ -363,11 +495,52 @@ export const DASHBOARD_LOCAL_AI: Record<string, LocalAIFixture> = {
 };
 
 export const DASHBOARD_GBP_AUDITS: Record<string, GBPAuditFixture> = {
-  "baptist-memphis": { audit_status: "completed" },
-  "baptist-collierville": { audit_status: "completed" },
-  "baptist-desoto": { audit_status: "processing" },
-  "baptist-north-mississippi": { audit_status: "completed" },
-  "baptist-golden-triangle": { audit_status: "processing" },
+  "baptist-memphis": {
+    audit_status: "completed",
+    source: "searchatlas",
+    report_id: 14700,
+    report: {
+      overall_score: 82,
+      score_grade: "B",
+      gbp_score: 78,
+      citation_score: 72,
+      is_verified: true,
+    },
+  },
+  "baptist-collierville": {
+    audit_status: "completed",
+    source: "searchatlas",
+    report_id: 14701,
+    report: {
+      overall_score: 88,
+      score_grade: "A",
+      gbp_score: 85,
+      citation_score: 80,
+      is_verified: true,
+    },
+  },
+  "baptist-desoto": {
+    audit_status: "processing",
+    source: "searchatlas",
+    report_id: 14702,
+  },
+  "baptist-north-mississippi": {
+    audit_status: "completed",
+    source: "searchatlas",
+    report_id: 14703,
+    report: {
+      overall_score: 74,
+      score_grade: "C",
+      gbp_score: 70,
+      citation_score: 65,
+      is_verified: true,
+    },
+  },
+  "baptist-golden-triangle": {
+    audit_status: "processing",
+    source: "searchatlas",
+    report_id: 14704,
+  },
 };
 
 function makeGeoGrids(
@@ -379,6 +552,7 @@ function makeGeoGrids(
   return [
     {
       keyword: keyword1,
+      source: "dataforseo",
       snapshots: [
         {
           date: "2026-06-01",
@@ -389,6 +563,7 @@ function makeGeoGrids(
     },
     {
       keyword: keyword2,
+      source: "dataforseo",
       snapshots: [
         {
           date: "2026-06-01",
@@ -399,6 +574,7 @@ function makeGeoGrids(
     },
     {
       keyword: keyword3,
+      source: "dataforseo",
       snapshots: [
         {
           date: "2026-06-01",
@@ -477,6 +653,171 @@ export const DASHBOARD_ADDABLE: AddableCandidate[] = [
     source: "dataforseo",
   },
 ];
+
+export const DASHBOARD_COMPETITORS: Record<string, CompetitorsFixture> = {
+  "baptist-memphis": {
+    slug: "baptist-memphis",
+    competitors: [
+      {
+        name: "Methodist University Hospital",
+        cid: "c01",
+        rating: 4.1,
+        votes: 980,
+        distance_mi: 3.2,
+        map_pack_wins: 45,
+        source: "dataforseo",
+      },
+      {
+        name: "Regional One Health",
+        cid: "c02",
+        rating: 3.8,
+        votes: 720,
+        distance_mi: 4.5,
+        map_pack_wins: 30,
+        source: "dataforseo",
+      },
+      {
+        name: "St. Jude Children's Research Hospital",
+        cid: "c03",
+        rating: 4.8,
+        votes: 2100,
+        distance_mi: 2.8,
+        map_pack_wins: 58,
+        source: "dataforseo",
+      },
+    ],
+  },
+  "baptist-collierville": {
+    slug: "baptist-collierville",
+    competitors: [
+      {
+        name: "Methodist Le Bonheur Germantown",
+        cid: "c04",
+        rating: 4.3,
+        votes: 650,
+        distance_mi: 5.1,
+        map_pack_wins: 38,
+        source: "dataforseo",
+      },
+      {
+        name: "Saint Francis Hospital - Bartlett",
+        cid: "c05",
+        rating: 4.0,
+        votes: 480,
+        distance_mi: 8.2,
+        source: "dataforseo",
+      },
+    ],
+  },
+  "baptist-desoto": {
+    slug: "baptist-desoto",
+    competitors: [
+      {
+        name: "Methodist Olive Branch Hospital",
+        cid: "c06",
+        rating: 4.2,
+        votes: 320,
+        distance_mi: 7.5,
+        map_pack_wins: 25,
+        source: "dataforseo",
+      },
+    ],
+  },
+  "baptist-north-mississippi": {
+    slug: "baptist-north-mississippi",
+    competitors: [
+      {
+        name: "North Mississippi Medical Center",
+        cid: "c07",
+        rating: 4.0,
+        votes: 580,
+        distance_mi: 1.2,
+        map_pack_wins: 42,
+        source: "dataforseo",
+      },
+      {
+        name: "OCH Regional Medical Center",
+        cid: "c08",
+        rating: 3.6,
+        votes: 210,
+        distance_mi: 25.0,
+        source: "dataforseo",
+      },
+    ],
+  },
+  "baptist-golden-triangle": {
+    slug: "baptist-golden-triangle",
+    competitors: [
+      {
+        name: "Baptist Memorial Hospital - Attala",
+        cid: "c09",
+        rating: 3.5,
+        votes: 95,
+        distance_mi: 12.0,
+        source: "dataforseo",
+      },
+    ],
+  },
+};
+
+export const DASHBOARD_KEYWORDS: Record<string, KeywordsFixture> = {
+  "baptist-memphis": {
+    slug: "baptist-memphis",
+    max_keywords: 20,
+    keywords: [
+      { keyword: "hospital near me", status: "scanned" },
+      { keyword: "emergency room memphis", status: "scanned" },
+      { keyword: "Baptist hospital Memphis", status: "scanned" },
+      { keyword: "orthopedic surgeon memphis", status: "scanned" },
+      { keyword: "cardiology memphis tn", status: "scanned" },
+      { keyword: "primary care memphis", status: "not_scanned" },
+      { keyword: "urgent care near me", status: "not_scanned" },
+    ],
+  },
+  "baptist-collierville": {
+    slug: "baptist-collierville",
+    max_keywords: 20,
+    keywords: [
+      { keyword: "hospital near me", status: "scanned" },
+      { keyword: "Baptist Collierville", status: "scanned" },
+      { keyword: "emergency room near me", status: "scanned" },
+      { keyword: "collierville hospital", status: "scanned" },
+      { keyword: "orthopedic collierville", status: "not_scanned" },
+    ],
+  },
+  "baptist-desoto": {
+    slug: "baptist-desoto",
+    max_keywords: 20,
+    keywords: [
+      { keyword: "hospital near me", status: "scanned" },
+      { keyword: "Baptist Southaven", status: "scanned" },
+      { keyword: "urgent care near me", status: "scanned" },
+      { keyword: "southaven hospital", status: "not_scanned" },
+      { keyword: "desoto county hospital", status: "not_scanned" },
+    ],
+  },
+  "baptist-north-mississippi": {
+    slug: "baptist-north-mississippi",
+    max_keywords: 20,
+    keywords: [
+      { keyword: "hospital near me", status: "scanned" },
+      { keyword: "Baptist Oxford MS", status: "scanned" },
+      { keyword: "orthopedic surgeon near me", status: "scanned" },
+      { keyword: "oxford ms hospital", status: "not_scanned" },
+    ],
+  },
+  "baptist-golden-triangle": {
+    slug: "baptist-golden-triangle",
+    max_keywords: 20,
+    keywords: [
+      { keyword: "hospital near me", status: "scanned" },
+      { keyword: "Baptist Columbus MS", status: "scanned" },
+      { keyword: "primary care doctor", status: "scanned" },
+      { keyword: "columbus ms hospital", status: "not_scanned" },
+      { keyword: "golden triangle hospital", status: "not_scanned" },
+    ],
+  },
+};
 
 export const STUB_NOTIFICATIONS: BellItem[] = [
   { id: "n1", audience: "all" },

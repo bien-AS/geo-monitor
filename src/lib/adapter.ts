@@ -13,6 +13,8 @@ import type {
   GeoGridFixture,
   AuditLogEntry,
   AddableCandidate,
+  CompetitorsFixture,
+  KeywordsFixture,
 } from "@/lib/data/types";
 
 import {
@@ -27,6 +29,8 @@ import {
   DASHBOARD_GRID_PREVIEWS,
   DASHBOARD_AUDIT_LOG,
   DASHBOARD_ADDABLE,
+  DASHBOARD_COMPETITORS,
+  DASHBOARD_KEYWORDS,
 } from "@/lib/data/fixtures";
 
 export interface Adapter {
@@ -42,6 +46,8 @@ export interface Adapter {
   getGBPAudit: (slug: string) => Promise<GBPAuditFixture | null>;
   getGeoGrids: (slug: string) => Promise<GeoGridFixture[]>;
   getGridPreview: (slug: string) => Promise<GridPreviewFixture | null>;
+  getCompetitors: (slug: string) => Promise<CompetitorsFixture | null>;
+  getKeywords: (slug: string) => Promise<KeywordsFixture | null>;
 }
 
 export function getAdapter(): Adapter {
@@ -81,6 +87,12 @@ export function getAdapter(): Adapter {
     },
     async getGridPreview(slug) {
       return DASHBOARD_GRID_PREVIEWS[slug] ?? null;
+    },
+    async getCompetitors(slug) {
+      return DASHBOARD_COMPETITORS[slug] ?? null;
+    },
+    async getKeywords(slug) {
+      return DASHBOARD_KEYWORDS[slug] ?? null;
     },
   };
 }
