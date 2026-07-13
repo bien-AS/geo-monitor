@@ -31,14 +31,18 @@ import {
   DASHBOARD_ADDABLE,
   DASHBOARD_COMPETITORS,
   DASHBOARD_KEYWORDS,
+  DASHBOARD_KEYWORD_TEMPLATES,
 } from "@/lib/data/fixtures";
+import type { LocationsFile, AuditLogFile, NAPFile } from "@/lib/data/types";
 
 export interface Adapter {
   getLocations: () => Promise<BaptistLocation[]>;
+  getLocation: (slug: string) => Promise<BaptistLocation | null>;
+  getLocationsFile: () => Promise<LocationsFile>;
   getNotifications: () => Promise<{ notifications: BellItem[] }>;
   getLVI: () => Promise<LVIData>;
-  getNAP: () => Promise<NAPData>;
-  getAuditLog: () => Promise<{ entries: AuditLogEntry[] }>;
+  getNAP: () => Promise<NAPFile>;
+  getAuditLog: () => Promise<AuditLogFile>;
   getAddableLocations: () => Promise<{ candidates: AddableCandidate[] }>;
   getReviews: (slug: string) => Promise<ReviewsFixture | null>;
   getCitations: (slug: string) => Promise<CitationsFixture | null>;
@@ -55,6 +59,17 @@ export function getAdapter(): Adapter {
     async getLocations() {
       return DASHBOARD_LOCATIONS;
     },
+    async getLocation(slug) {
+      return DASHBOARD_LOCATIONS.find((l) => l.slug === slug) ?? null;
+    },
+    async getLocationsFile() {
+      return {
+        generated_at: "2026-07-10",
+        source_note: "Fixture data for as-baptist-local",
+        keyword_templates: DASHBOARD_KEYWORD_TEMPLATES,
+        locations: DASHBOARD_LOCATIONS,
+      };
+    },
     async getNotifications() {
       return { notifications: STUB_NOTIFICATIONS };
     },
@@ -62,10 +77,15 @@ export function getAdapter(): Adapter {
       return DASHBOARD_LVI;
     },
     async getNAP() {
-      return DASHBOARD_NAP;
+      return {
+        generated_at: "2026-07-10",
+        source_note: "Canonical NAP + observed drifts from DataForSEO",
+        canonical: {},
+        drifts: DASHBOARD_NAP.drifts,
+      };
     },
     async getAuditLog() {
-      return { entries: DASHBOARD_AUDIT_LOG };
+      return { generated_at: "2026-07-10", entries: DASHBOARD_AUDIT_LOG };
     },
     async getAddableLocations() {
       return { candidates: DASHBOARD_ADDABLE };

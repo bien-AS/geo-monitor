@@ -1,5 +1,5 @@
 export function shortLocationName(name: string): string {
-  return name.replace(/^Baptist Medical Group\s*[-|–]\s*/i, "").trim();
+  return name.replace(/^Baptist Medical Group\s*[-|\u2013]\s*/i, "").trim();
 }
 
 export function slugFromPathname(pathname: string): string | null {

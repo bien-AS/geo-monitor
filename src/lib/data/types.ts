@@ -17,6 +17,8 @@ export type AuditLogEntry = {
   location_slug?: string;
 };
 
+export type ListingType = "facility" | "department" | "practitioner";
+
 export type BaptistLocation = {
   slug: string;
   name: string;
@@ -27,7 +29,13 @@ export type BaptistLocation = {
   place_id: string | null;
   lat: number | null;
   lng: number | null;
-  listing_type: "facility" | "department" | "practitioner";
+  listing_type: ListingType;
+  facility_type?: string;
+  additional_categories?: string[];
+  total_photos?: number;
+  attributes?: Record<string, string[]>;
+  domain?: string;
+  zip?: string;
   rating?: { value: number; votes_count: number } | null;
   website?: string | null;
   phone?: string | null;
@@ -67,16 +75,83 @@ export interface LVIData {
 export interface NAPDrift {
   slug: string;
   directory: string;
-  field: string;
+  field: "name" | "address" | "phone" | "website";
   canonical: string;
+  canonical_value?: string;
   observed: string;
-  severity: string;
-  status: "open" | "resolved";
+  observed_value?: string;
+  severity: "critical" | "moderate" | "minor" | string;
+  status: "open" | "resolved" | "fix_queued" | "fixed";
   detected_at: string;
+  source?: DataSource;
 }
 
 export interface NAPData {
   drifts: NAPDrift[];
+}
+
+export interface NAPFile {
+  generated_at: string;
+  source_note: string;
+  canonical: Record<
+    string,
+    { name: string; address: string; phone: string; website?: string; source: DataSource }
+  >;
+  drifts: NAPDrift[];
+}
+
+/* ------------------------------------------------------------------ */
+/* GBP audit (Search Atlas)                                           */
+/* ------------------------------------------------------------------ */
+
+export interface AuditCategoryScore {
+  score: number | null;
+  complete: number;
+  needs_attention: number;
+  incomplete: number;
+  total_items: number;
+}
+
+export interface GBPAuditReport {
+  overall_score: number | null;
+  score_grade?: string;
+  gbp_score?: number | null;
+  citation_score?: number | null;
+  is_verified?: boolean;
+  report_id?: number;
+  business_name?: string;
+  address?: string;
+  website_uri?: string | null;
+  audit_date?: string;
+  is_connected?: boolean;
+  category_scores?: Record<string, AuditCategoryScore>;
+  key_insights?: unknown;
+  business_metrics_core?: Record<string, { value: number | null; delta: number | null }>;
+  keyword_rankings_summary?: Record<string, unknown>;
+  competitor_benchmark?: unknown;
+}
+
+export interface GBPAuditFixture {
+  slug?: string;
+  audit_status: string;
+  source?: DataSource;
+  report?: GBPAuditReport;
+  report_id?: number;
+  fetched_at?: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* 16-point healthcare scorecard                                      */
+/* ------------------------------------------------------------------ */
+
+export interface ScorecardItem {
+  id: string;
+  n: number;
+  label: string;
+  status: "pass" | "attention" | "fail" | "unknown";
+  detail: string;
+  source: DataSource;
+  action?: string;
 }
 
 export interface ReviewSummary {
@@ -109,8 +184,30 @@ export interface CitationsBreakdown {
   duplicate: number;
 }
 
+export type CitationStatus = "present" | "mismatch" | "missing" | "duplicate";
+
+export interface CitationRow {
+  directory: string;
+  domain: string;
+  category: "general" | "health";
+  authority: number;
+  authority_band: "very-high" | "high" | "medium" | "low";
+  listed: boolean;
+  status: CitationStatus;
+  nap_observed?: { name: string; address: string; phone: string };
+  field_match?: { name: boolean; address: boolean; phone: boolean };
+  last_checked: string;
+  delta_since_last: "stable" | "changed" | "fixed";
+  source: DataSource;
+  listing_url?: string;
+}
+
 export interface CitationsFixture {
+  slug?: string;
+  generated_at?: string;
+  source?: DataSource;
   breakdown: CitationsBreakdown;
+  rows?: CitationRow[];
 }
 
 export interface LocalAIResult {
@@ -125,21 +222,6 @@ export interface LocalAIResult {
 export interface LocalAIFixture {
   prompts: string[];
   results: LocalAIResult[];
-}
-
-export interface GBPAuditReport {
-  overall_score: number | null;
-  score_grade?: string;
-  gbp_score?: number | null;
-  citation_score?: number | null;
-  is_verified?: boolean;
-}
-
-export interface GBPAuditFixture {
-  audit_status: string;
-  source?: DataSource;
-  report?: GBPAuditReport;
-  report_id?: number;
 }
 
 export interface GridPreviewFixture {
@@ -236,11 +318,19 @@ export interface CompetitorsFixture {
 export interface TrackedKeyword {
   keyword: string;
   status: "scanned" | "not_scanned";
+  added_at?: string;
+  volume_est?: number;
+  competition?: "low" | "medium" | "high";
+  in_geo_grid?: boolean;
+  in_local_ai?: boolean;
+  in_competitive?: boolean;
+  source?: DataSource;
 }
 
 export interface KeywordsFixture {
   slug: string;
   max_keywords: number;
+  generated_at?: string;
   keywords: TrackedKeyword[];
 }
 
@@ -251,4 +341,24 @@ export interface AddableCandidate {
   votes: number | null;
   near: string;
   source: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* Audit log file                                                     */
+/* ------------------------------------------------------------------ */
+
+export interface AuditLogFile {
+  generated_at: string;
+  entries: AuditLogEntry[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Location files (keyword templates)                                 */
+/* ------------------------------------------------------------------ */
+
+export interface LocationsFile {
+  generated_at: string;
+  source_note: string;
+  keyword_templates: Record<string, string[]>;
+  locations: BaptistLocation[];
 }
