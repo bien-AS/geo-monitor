@@ -1,12 +1,13 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import { useGeoGrid } from "@/hooks/use-geo-grid";
-import { GeoGridScreen } from "@/components/screens/geo-grid/geo-grid-screen";
+import { GeoGridCompareScreen } from "@/components/screens/geo-grid/compare-screen";
 import { Card } from "@/components/ui/card";
 
-export default function GeoGridPage() {
+export default function GeoGridComparePage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const { data, isLoading, error } = useGeoGrid(slug);
 
@@ -32,13 +33,13 @@ export default function GeoGridPage() {
   }
 
   return (
-    <GeoGridScreen
+    <GeoGridCompareScreen
       location={data.location}
       grids={data.grids}
-      preview={data.preview}
-      localAI={data.localAI}
       locations={data.locations}
-      trackedKeywords={data.trackedKeywords}
+      initialKeyword={searchParams.get("kw") ?? undefined}
+      initialA={searchParams.get("a") ?? undefined}
+      initialB={searchParams.get("b") ?? undefined}
     />
   );
 }
