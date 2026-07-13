@@ -9,6 +9,7 @@ import type {
   LocalAIFixture,
   GBPAuditFixture,
   GridPreviewFixture,
+  GridSnapshot,
   GeoGridFixture,
   AuditLogEntry,
   AddableCandidate,
@@ -543,75 +544,167 @@ export const DASHBOARD_GBP_AUDITS: Record<string, GBPAuditFixture> = {
   },
 };
 
+const MILES_PER_DEG_LAT = 69.172;
+
+function buildLatticePins(
+  centerLat: number,
+  centerLng: number,
+  rows = 10,
+  cols = 10,
+  spacingMiles = 1.0,
+): Array<{ lat: number; lng: number; index: number }> {
+  const milesPerDegLng = MILES_PER_DEG_LAT * Math.cos((centerLat * Math.PI) / 180);
+  const pins: Array<{ lat: number; lng: number; index: number }> = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const kLat = (rows - 1) / 2 - r;
+      const kLng = c - (cols - 1) / 2;
+      pins.push({
+        index: r * cols + c,
+        lat: Math.round((centerLat + (kLat * spacingMiles) / MILES_PER_DEG_LAT) * 1e7) / 1e7,
+        lng: Math.round((centerLng + (kLng * spacingMiles) / milesPerDegLng) * 1e7) / 1e7,
+      });
+    }
+  }
+  return pins;
+}
+
+function distanceMiles(aLat: number, aLng: number, bLat: number, bLng: number): number {
+  const R = 3958.8;
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const dLat = toRad(bLat - aLat);
+  const dLng = toRad(bLng - aLng);
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(aLat)) * Math.cos(toRad(bLat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function hashStr(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return Math.abs(h);
+}
+
 function makeGeoGrids(
+  centerLat: number,
+  centerLng: number,
   keyword1: string,
   keyword2: string,
   keyword3: string,
   avgRanks: [number | null, number | null, number | null],
 ): GeoGridFixture[] {
+  const pins = buildLatticePins(centerLat, centerLng);
+  const centerIndex = 45;
+
+  function makeKeywordFixture(keyword: string, avgRank: number | null): GeoGridFixture {
+    const seed = hashStr(keyword);
+    function pinRank(pin: { lat: number; lng: number }, cycle: number): number | null {
+      if (avgRank == null) return null;
+      const dist = distanceMiles(centerLat, centerLng, pin.lat, pin.lng);
+      const baseBias = Math.min(dist * (avgRank / 100), 15);
+      const t = ((seed + pin.lat * 10000 + pin.lng * 10000) % 1000) / 1000;
+      const jitter = (t - 0.5) * (avgRank / 2) * 2;
+      const improvement = cycle * (avgRank * 0.03 + 0.1);
+      const rank = avgRank + baseBias + jitter - improvement;
+      const r = Math.round(Math.max(1, Math.min(20, rank)));
+      return r <= 20 ? r : null;
+    }
+
+    function makeSnapshot(cycle: number): GridSnapshot {
+      const sp = pins.map((p) => {
+        const rank = pinRank(p, cycle);
+        return {
+          lat: p.lat,
+          lng: p.lng,
+          rank,
+          local_finder_rank: rank != null ? Math.min(20, rank + 1) : null,
+          organic_rank: rank != null ? Math.min(20, rank + 2) : null,
+        };
+      });
+      const ranks = sp.map((p) => p.rank);
+      const found = ranks.filter((r): r is number => r != null);
+      const dist: Record<string, number> = {
+        "1-3": 0,
+        "4-7": 0,
+        "8-20": 0,
+        "20+": 0,
+      };
+      for (const r of ranks) {
+        if (r == null) dist["20+"]++;
+        else if (r <= 3) dist["1-3"]++;
+        else if (r <= 7) dist["4-7"]++;
+        else dist["8-20"]++;
+      }
+      return {
+        date: cycle === 0 ? "2026-06-01" : "2026-07-01",
+        pins: sp,
+        avg_rank: found.length
+          ? Math.round((found.reduce((s, v) => s + v, 0) / found.length) * 10) / 10
+          : null,
+        best_position: found.length ? Math.min(...found) : null,
+        radius_miles: 5,
+        total_pins: sp.length,
+        position_distribution: dist,
+        competitors: [],
+        snapshot_history: [],
+      };
+    }
+
+    return {
+      keyword,
+      source: "dataforseo",
+      grid_shape: "square-10x10",
+      snapshots: [makeSnapshot(0), makeSnapshot(1)],
+    };
+  }
+
   return [
-    {
-      keyword: keyword1,
-      source: "dataforseo",
-      snapshots: [
-        {
-          date: "2026-06-01",
-          avg_rank: avgRanks[0] != null ? (avgRanks[0] as number) + 0.3 : null,
-        },
-        { date: "2026-07-01", avg_rank: avgRanks[0] },
-      ],
-    },
-    {
-      keyword: keyword2,
-      source: "dataforseo",
-      snapshots: [
-        {
-          date: "2026-06-01",
-          avg_rank: avgRanks[1] != null ? (avgRanks[1] as number) + 0.5 : null,
-        },
-        { date: "2026-07-01", avg_rank: avgRanks[1] },
-      ],
-    },
-    {
-      keyword: keyword3,
-      source: "dataforseo",
-      snapshots: [
-        {
-          date: "2026-06-01",
-          avg_rank: avgRanks[2] != null ? (avgRanks[2] as number) + 0.2 : null,
-        },
-        { date: "2026-07-01", avg_rank: avgRanks[2] },
-      ],
-    },
+    makeKeywordFixture(keyword1, avgRanks[0]),
+    makeKeywordFixture(keyword2, avgRanks[1]),
+    makeKeywordFixture(keyword3, avgRanks[2]),
   ];
 }
 
 export const DASHBOARD_GEO_GRIDS: Record<string, GeoGridFixture[]> = {
   "baptist-memphis": makeGeoGrids(
+    35.1375,
+    -89.9792,
     "hospital near me",
     "emergency room memphis",
     "Baptist hospital Memphis",
     [2.1, 1.8, 1.3],
   ),
   "baptist-collierville": makeGeoGrids(
+    35.042,
+    -89.6645,
     "hospital near me",
     "Baptist Collierville",
     "emergency room near me",
     [3.2, 2.5, 4.8],
   ),
   "baptist-desoto": makeGeoGrids(
+    34.9436,
+    -89.9783,
     "hospital near me",
     "Baptist Southaven",
     "urgent care near me",
     [6.5, 5.1, 8.2],
   ),
   "baptist-north-mississippi": makeGeoGrids(
+    34.3597,
+    -89.5261,
     "hospital near me",
     "Baptist Oxford MS",
     "orthopedic surgeon near me",
     [4.8, 3.9, 7.1],
   ),
   "baptist-golden-triangle": makeGeoGrids(
+    33.4957,
+    -88.4273,
     "hospital near me",
     "Baptist Columbus MS",
     "primary care doctor",
@@ -620,11 +713,11 @@ export const DASHBOARD_GEO_GRIDS: Record<string, GeoGridFixture[]> = {
 };
 
 export const DASHBOARD_GRID_PREVIEWS: Record<string, GridPreviewFixture> = {
-  "baptist-memphis": { preview: { pin_count: 49, keyword_count: 3 } },
-  "baptist-collierville": { preview: { pin_count: 49, keyword_count: 3 } },
-  "baptist-desoto": { preview: { pin_count: 49, keyword_count: 3 } },
-  "baptist-north-mississippi": { preview: { pin_count: 49, keyword_count: 3 } },
-  "baptist-golden-triangle": { preview: { pin_count: 49, keyword_count: 3 } },
+  "baptist-memphis": { preview: { pin_count: 100, keyword_count: 3 } },
+  "baptist-collierville": { preview: { pin_count: 100, keyword_count: 3 } },
+  "baptist-desoto": { preview: { pin_count: 100, keyword_count: 3 } },
+  "baptist-north-mississippi": { preview: { pin_count: 100, keyword_count: 3 } },
+  "baptist-golden-triangle": { preview: { pin_count: 100, keyword_count: 3 } },
 };
 
 export const DASHBOARD_ADDABLE: AddableCandidate[] = [

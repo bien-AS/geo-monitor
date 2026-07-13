@@ -117,6 +117,9 @@ export interface LocalAIResult {
   surface: string;
   cited: boolean | "partial";
   prompt: string;
+  source?: DataSource;
+  source_cited?: string | null;
+  snippet?: string;
 }
 
 export interface LocalAIFixture {
@@ -144,19 +147,74 @@ export interface GridPreviewFixture {
 }
 
 export interface GridPin {
+  lat: number;
+  lng: number;
   rank?: number | null;
+  pinColor?: string;
+  pinLabel?: string;
+  local_finder_rank?: number | null;
+  organic_rank?: number | null;
+}
+
+export interface CompetitorAgg {
+  title: string;
+  data_cid?: string;
+  appearances: number;
+  avg_position: number;
+  top3_count: number;
+  rating?: number | null;
+  reviews?: number | null;
+  category?: string | null;
+  is_family?: boolean;
 }
 
 export interface GridSnapshot {
   date: string;
   avg_rank: number | null;
+  best_position?: number | null;
+  radius_miles?: number;
+  total_pins?: number;
+  position_distribution?: Record<string, number>;
   pins?: GridPin[];
+  competitors?: CompetitorAgg[];
+  snapshot_history?: { date: string; avg_position: number }[];
+  geoscan?: {
+    atgr?: number;
+    solv?: number;
+    family_solv?: number | null;
+    scan_id?: string;
+    provider?: string;
+    queue?: string;
+  };
 }
 
 export interface GeoGridFixture {
   keyword: string;
   source?: DataSource;
+  grid_shape?: string;
   snapshots: GridSnapshot[];
+}
+
+export interface EntityFamily {
+  primaryCid: string;
+  memberCids: Set<string>;
+  addressFragment: string;
+  domains: string[];
+}
+
+export interface CompetitorHit {
+  cid: string;
+  title: string;
+  rank: number;
+  rating: number | null;
+  reviews: number | null;
+  category: string | null;
+}
+
+export interface WhoWinsFixture {
+  slug: string;
+  keyword: string;
+  winners: Array<{ cell_index: number; winner_cid: string; winner_name: string }>;
 }
 
 export interface Competitor {
