@@ -16,6 +16,7 @@ import type {
   AddableCandidate,
   CompetitorsFixture,
   KeywordsFixture,
+  PostsFixture,
   CitationRow,
   CitationAggregator,
 } from "@/lib/data/types";
@@ -1102,25 +1103,75 @@ export const DASHBOARD_CITATIONS: Record<string, CitationsFixture> = {
   "baptist-golden-triangle": makeCitationsData("baptist-golden-triangle"),
 };
 
-function makeLocalAI(prompts: string[], citedSlugs: string[]): LocalAIFixture {
+function makeLocalAI(locationSlug: string, prompts: string[]): LocalAIFixture {
   const results: LocalAIFixture["results"] = [];
+  const locationsWithCitations = ["baptist-memphis", "baptist-collierville"];
+  const hasRealChecks = locationSlug !== "baptist-golden-triangle";
+  const surfaces = [
+    { id: "perplexity", cost: 0.015, category: "chatbot" as const },
+    { id: "chatgpt", cost: 0.015, category: "chatbot" as const },
+    { id: "gemini", cost: 0.015, category: "chatbot" as const },
+    { id: "claude", cost: 0.015, category: "chatbot" as const },
+    { id: "ai-overviews", cost: 0.005, category: "search" as const },
+    { id: "ai-mode", cost: 0.02, category: "search" as const },
+  ];
+
   for (const prompt of prompts) {
-    for (const surface of [
-      "chatgpt",
-      "gemini",
-      "claude",
-      "perplexity",
-      "ai-overviews",
-      "ai-mode",
-    ]) {
-      const roll = Math.random();
+    for (const surface of surfaces) {
+      const seed = prompt.length + surface.id.length + locationSlug.length;
+      const roll = (seed * 7 + surface.id.charCodeAt(0)) % 100;
+      const cited = roll > 65 ? true : roll > 30 ? "partial" : false;
+
+      const rivals = [
+        "healthgrades.com",
+        "webmd.com",
+        "mayoclinic.org",
+        "ummc.edu",
+        "healthline.com",
+      ];
+      const isCited =
+        cited === true && locationsWithCitations.includes(locationSlug) && Math.random() > 0.3;
+      const sourceCited = isCited
+        ? "www.baptistmedicalclinic.org"
+        : cited === false && Math.random() > 0.3
+          ? rivals[roll % rivals.length]
+          : null;
+
+      const position =
+        cited === true && Math.random() > 0.4
+          ? Math.ceil(Math.random() * 5)
+          : cited === "partial" && Math.random() > 0.5
+            ? Math.ceil(3 + Math.random() * 7)
+            : null;
+
       results.push({
-        surface,
-        cited: roll > 0.7 ? true : roll > 0.35 ? "partial" : false,
+        surface: surface.id,
+        cited,
         prompt,
+        position,
+        source_cited: sourceCited,
+        snippet:
+          cited === true
+            ? `${locationSlug.includes("memphis") ? "Baptist Memorial Hospital" : "Baptist"} appears in the response as a recommended provider for this query.`
+            : cited === "partial"
+              ? "The provider is mentioned briefly but without a direct link or citation."
+              : undefined,
+        checked_at: "2026-07-10",
+        cost: surface.cost,
+        source: hasRealChecks ? "dataforseo" : "synthetic",
+        model:
+          surface.id === "chatgpt"
+            ? "gpt-4-turbo"
+            : surface.id === "gemini"
+              ? "gemini-pro"
+              : undefined,
+        note: hasRealChecks
+          ? `Live check via DataForSEO SERP API — ${surface.id} ${surface.category === "chatbot" ? "chatbot" : "search"} surface`
+          : undefined,
       });
     }
   }
+
   return { prompts, results };
 }
 
@@ -1132,11 +1183,11 @@ const AI_PROMPTS = [
 ];
 
 export const DASHBOARD_LOCAL_AI: Record<string, LocalAIFixture> = {
-  "baptist-memphis": makeLocalAI(AI_PROMPTS, ["baptist-memphis", "baptist-collierville"]),
-  "baptist-collierville": makeLocalAI(AI_PROMPTS, ["baptist-collierville", "baptist-memphis"]),
-  "baptist-desoto": makeLocalAI(AI_PROMPTS, ["baptist-memphis"]),
-  "baptist-north-mississippi": makeLocalAI(AI_PROMPTS, ["baptist-north-mississippi"]),
-  "baptist-golden-triangle": makeLocalAI(AI_PROMPTS, []),
+  "baptist-memphis": makeLocalAI("baptist-memphis", AI_PROMPTS),
+  "baptist-collierville": makeLocalAI("baptist-collierville", AI_PROMPTS),
+  "baptist-desoto": makeLocalAI("baptist-desoto", AI_PROMPTS),
+  "baptist-north-mississippi": makeLocalAI("baptist-north-mississippi", AI_PROMPTS),
+  "baptist-golden-triangle": makeLocalAI("baptist-golden-triangle", AI_PROMPTS),
 };
 
 export const DASHBOARD_GBP_AUDITS: Record<string, GBPAuditFixture> = {
@@ -1991,6 +2042,373 @@ export const DASHBOARD_KEYWORDS: Record<string, KeywordsFixture> = {
         in_local_ai: false,
         in_competitive: false,
         source: "dataforseo",
+      },
+    ],
+  },
+};
+
+export const DASHBOARD_POSTS: Record<string, PostsFixture> = {
+  "baptist-memphis": {
+    slug: "baptist-memphis",
+    generated_at: "2026-07-10",
+    source: "synthetic",
+    posts: [
+      {
+        id: "post-mem-1",
+        type: "whats_new",
+        title: "Now welcoming new patients for primary care",
+        body: "Baptist Memorial Hospital - Memphis is currently welcoming new patients at our Walnut Grove campus. Our team can help with scheduling, insurance questions, and finding an appointment time that works for you and your family. Same-week availability is often open for routine visits.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/memphis" },
+        status: "published",
+        published_at: "2026-07-08T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-mem-2",
+        type: "event",
+        title: "Community wellness event at Baptist Memphis",
+        body: "Join us for a community wellness event in Memphis. Stop by for free blood pressure checks, wellness resources, and a chance to meet members of the Baptist Memorial Hospital care team. Saturday, August 15 from 9 AM to noon in the main lobby.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/memphis" },
+        status: "scheduled",
+        scheduled_for: "2026-08-10T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-mem-3",
+        type: "screening",
+        title: "A reminder about preventive screenings",
+        body: "Routine screenings are one of the simplest ways to stay ahead of your health. Many take only minutes, and early awareness gives you and your care team more options. Ask Baptist Memorial Hospital in Memphis which screenings are recommended for your age and history.",
+        cta: {
+          label: "Book appointment",
+          url: "https://www.baptistmedicalclinic.org/locations/memphis",
+        },
+        status: "published",
+        published_at: "2026-06-22T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-mem-4",
+        type: "offer",
+        title: "Sports physicals season is here",
+        body: "Back-to-school season means sports physicals, and Baptist Memorial Hospital - Memphis makes them easy. Appointments are quick, and our team can complete the forms your school or league requires. Call ahead to confirm walk-in hours, or schedule a time that fits your family's calendar.",
+        cta: {
+          label: "Book appointment",
+          url: "https://www.baptistmedicalclinic.org/locations/memphis",
+        },
+        status: "pending_approval",
+        source: "synthetic",
+      },
+      {
+        id: "post-mem-5",
+        type: "provider_announcement",
+        title: "Our orthopedic team is growing",
+        body: "Baptist Memorial Hospital - Memphis is preparing to welcome a new orthopedic surgeon to our Memphis office. New appointment slots will open in the coming weeks, and our front desk can add you to the interest list today.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/memphis" },
+        status: "draft",
+        source: "synthetic",
+      },
+      {
+        id: "post-mem-6",
+        type: "health_observance",
+        title: "A health observance worth your attention",
+        body: "National health observances are a helpful nudge to check in on your own wellness routine. This month, take a moment to review preventive care basics — routine checkups, screenings, and healthy habits. The care team at Baptist Memorial Hospital in Memphis can help you decide which steps make sense for you.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/memphis" },
+        status: "published",
+        published_at: "2026-05-15T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-mem-7",
+        type: "whats_new",
+        title: "Expanded walk-in hours now available",
+        body: "We've heard your feedback and are expanding our walk-in hours. Starting next month, Baptist Memorial Hospital - Memphis will offer extended evening hours Monday through Thursday. No appointment necessary for urgent but non-emergency visits.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/memphis" },
+        status: "draft",
+        source: "synthetic",
+      },
+    ],
+  },
+  "baptist-collierville": {
+    slug: "baptist-collierville",
+    generated_at: "2026-07-10",
+    source: "synthetic",
+    posts: [
+      {
+        id: "post-col-1",
+        type: "whats_new",
+        title: "Telehealth visits now available at Baptist Collierville",
+        body: "Baptist Memorial Hospital - Collierville now offers telehealth visits for many common conditions. Connect with a provider from the comfort of your home for follow-ups, medication management, and initial consultations.",
+        cta: {
+          label: "Learn more",
+          url: "https://www.baptistmedicalclinic.org/locations/collierville",
+        },
+        status: "published",
+        published_at: "2026-07-09T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-col-2",
+        type: "event",
+        title: "Flu shot clinic at Collierville campus",
+        body: "Protect yourself and your family this flu season. Baptist Memorial Hospital - Collierville is hosting a drive-through flu shot clinic on Saturday, September 12 from 8 AM to 2 PM. No appointment necessary.",
+        cta: {
+          label: "Learn more",
+          url: "https://www.baptistmedicalclinic.org/locations/collierville",
+        },
+        status: "scheduled",
+        scheduled_for: "2026-09-05T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-col-3",
+        type: "screening",
+        title: "Heart health screening available this month",
+        body: "February is Heart Health Month. Baptist Memorial Hospital - Collierville is offering discounted heart health screenings including lipid panels and blood pressure checks. Call to schedule your appointment today.",
+        cta: {
+          label: "Book appointment",
+          url: "https://www.baptistmedicalclinic.org/locations/collierville",
+        },
+        status: "published",
+        published_at: "2026-06-18T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-col-4",
+        type: "offer",
+        title: "New patient welcome package",
+        body: "Switching to Baptist Memorial Hospital - Collierville? New patients receive a complimentary wellness consultation and access to our online patient portal. Our care coordinators will help you transfer your records seamlessly.",
+        cta: {
+          label: "Learn more",
+          url: "https://www.baptistmedicalclinic.org/locations/collierville",
+        },
+        status: "published",
+        published_at: "2026-07-01T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-col-5",
+        type: "provider_announcement",
+        title: "New cardiologist joins Collierville team",
+        body: "Baptist Memorial Hospital - Collierville is pleased to welcome a board-certified cardiologist to our medical staff. The new provider brings over 15 years of experience and will begin seeing patients in August.",
+        cta: {
+          label: "Learn more",
+          url: "https://www.baptistmedicalclinic.org/locations/collierville",
+        },
+        status: "pending_approval",
+        source: "synthetic",
+      },
+      {
+        id: "post-col-6",
+        type: "health_observance",
+        title: "National Diabetes Awareness resources",
+        body: "In recognition of Diabetes Awareness Month, Baptist Memorial Hospital - Collierville is sharing free educational resources and hosting a Q&A session with our diabetes educators. Learn about prevention, management, and the latest treatment options.",
+        cta: {
+          label: "Learn more",
+          url: "https://www.baptistmedicalclinic.org/locations/collierville",
+        },
+        status: "draft",
+        source: "synthetic",
+      },
+    ],
+  },
+  "baptist-desoto": {
+    slug: "baptist-desoto",
+    generated_at: "2026-07-10",
+    source: "synthetic",
+    posts: [
+      {
+        id: "post-des-1",
+        type: "whats_new",
+        title: "Baptist DeSoto expands urgent care services",
+        body: "Baptist Memorial Hospital - DeSoto is expanding its urgent care department to better serve the Southaven community. New exam rooms and additional staff will help reduce wait times and improve the patient experience.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "published",
+        published_at: "2026-07-05T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-des-2",
+        type: "event",
+        title: "Blood drive at Baptist DeSoto",
+        body: "Give the gift of life. Baptist Memorial Hospital - DeSoto is partnering with Vitalant for a community blood drive on Friday, July 24 from 10 AM to 4 PM in the hospital conference center. All donors receive a free wellness screening.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "scheduled",
+        scheduled_for: "2026-07-18T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-des-3",
+        type: "screening",
+        title: "Free blood pressure checks every Wednesday",
+        body: "Baptist Memorial Hospital - DeSoto now offers free blood pressure checks every Wednesday from 9 AM to 11 AM in the main lobby. No appointment needed. Know your numbers and take control of your heart health.",
+        cta: { label: "Book appointment", url: "https://www.baptistonline.org/locations" },
+        status: "published",
+        published_at: "2026-06-10T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-des-4",
+        type: "offer",
+        title: "Mammogram appointments available next week",
+        body: "Early detection saves lives. Baptist Memorial Hospital - DeSoto has mammogram openings next week. Most insurance plans cover annual screening mammograms at no cost. Call to schedule yours today.",
+        cta: { label: "Book appointment", url: "https://www.baptistonline.org/locations" },
+        status: "pending_approval",
+        source: "synthetic",
+      },
+      {
+        id: "post-des-5",
+        type: "health_observance",
+        title: "Mental Health Awareness resources available",
+        body: "Your mental health matters. Baptist Memorial Hospital - DeSoto offers behavioral health services including counseling and psychiatric care. Reach out to our care team to learn about available resources and support groups in the Southaven area.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "draft",
+        source: "synthetic",
+      },
+      {
+        id: "post-des-6",
+        type: "provider_announcement",
+        title: "New family medicine provider now accepting patients",
+        body: "Baptist Memorial Hospital - DeSoto is excited to welcome a new family medicine provider to our Southaven team. The provider is now accepting patients of all ages and offers same-day appointments for acute needs.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "published",
+        published_at: "2026-05-28T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-des-7",
+        type: "whats_new",
+        title: "Updated visitor policy effective immediately",
+        body: "Baptist Memorial Hospital - DeSoto has updated its visitor policy to reflect current health guidelines. Please review the new policy before your next visit at our website or call the front desk with questions.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "draft",
+        source: "synthetic",
+      },
+    ],
+  },
+  "baptist-north-mississippi": {
+    slug: "baptist-north-mississippi",
+    generated_at: "2026-07-10",
+    source: "synthetic",
+    posts: [
+      {
+        id: "post-nms-1",
+        type: "whats_new",
+        title: "Baptist North Mississippi recognized for patient safety",
+        body: "Baptist Memorial Hospital - North Mississippi has been recognized by Healthgrades for excellence in patient safety. This award reflects our team's dedication to providing the highest standard of care to the Oxford community.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/oxford" },
+        status: "published",
+        published_at: "2026-07-06T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-nms-2",
+        type: "event",
+        title: "Diabetes education workshop in Oxford",
+        body: "Join Baptist Memorial Hospital - North Mississippi for a free diabetes education workshop. Learn about nutrition, glucose monitoring, and lifestyle strategies from our certified diabetes educators. Tuesday, August 4 at 6 PM.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/oxford" },
+        status: "scheduled",
+        scheduled_for: "2026-07-28T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-nms-3",
+        type: "screening",
+        title: "Know your numbers: cholesterol screening event",
+        body: "High cholesterol has no symptoms, but it raises your risk for heart disease. Baptist Memorial Hospital - North Mississippi is offering low-cost cholesterol screenings throughout July. Fasting not required for the basic panel.",
+        cta: {
+          label: "Book appointment",
+          url: "https://www.baptistmedicalclinic.org/locations/oxford",
+        },
+        status: "published",
+        published_at: "2026-07-02T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-nms-4",
+        type: "offer",
+        title: "Summer wellness check-up special",
+        body: "Stay on top of your health this summer. Baptist Memorial Hospital - North Mississippi is offering comprehensive wellness check-ups with flexible scheduling. Most insurance plans accepted with minimal co-pays.",
+        cta: {
+          label: "Book appointment",
+          url: "https://www.baptistmedicalclinic.org/locations/oxford",
+        },
+        status: "pending_approval",
+        source: "synthetic",
+      },
+      {
+        id: "post-nms-5",
+        type: "health_observance",
+        title: "Stroke awareness: know the signs",
+        body: "May is Stroke Awareness Month. Baptist Memorial Hospital - North Mississippi reminds the Oxford community to learn the FAST signs: Face drooping, Arm weakness, Speech difficulty, Time to call 911. Early treatment saves lives.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/oxford" },
+        status: "published",
+        published_at: "2026-05-12T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-nms-6",
+        type: "provider_announcement",
+        title: "Pediatric care expanding in Oxford",
+        body: "Baptist Memorial Hospital - North Mississippi is expanding its pediatric services. A new pediatric nurse practitioner will join the team this fall, adding capacity for well-child visits, immunizations, and acute care.",
+        cta: { label: "Learn more", url: "https://www.baptistmedicalclinic.org/locations/oxford" },
+        status: "draft",
+        source: "synthetic",
+      },
+    ],
+  },
+  "baptist-golden-triangle": {
+    slug: "baptist-golden-triangle",
+    generated_at: "2026-07-10",
+    source: "synthetic",
+    posts: [
+      {
+        id: "post-gt-1",
+        type: "whats_new",
+        title: "Baptist Golden Triangle adds weekend appointments",
+        body: "To better serve the Columbus community, Baptist Memorial Hospital - Golden Triangle now offers Saturday appointments for primary care and urgent care visits. Call our scheduling line to book your weekend visit.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "published",
+        published_at: "2026-07-07T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-gt-2",
+        type: "event",
+        title: "Community health fair at Golden Triangle",
+        body: "Baptist Memorial Hospital - Golden Triangle invites the Columbus community to our annual health fair. Free screenings, wellness information, and meet-and-greet with providers. Saturday, September 19 from 9 AM to 1 PM.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "scheduled",
+        scheduled_for: "2026-09-12T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-gt-3",
+        type: "screening",
+        title: "Colon cancer screening saves lives",
+        body: "March is Colorectal Cancer Awareness Month. Baptist Memorial Hospital - Golden Triangle encourages adults 45 and older to talk with their provider about screening options. Early detection leads to better outcomes.",
+        cta: { label: "Book appointment", url: "https://www.baptistonline.org/locations" },
+        status: "published",
+        published_at: "2026-06-20T14:00:00Z",
+        source: "synthetic",
+      },
+      {
+        id: "post-gt-4",
+        type: "offer",
+        title: "Referral to a specialist made easy",
+        body: "Need to see a specialist? Baptist Memorial Hospital - Golden Triangle's referral coordinators will handle the paperwork and find you an appointment that fits your schedule. Call our referral desk during business hours.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "draft",
+        source: "synthetic",
+      },
+      {
+        id: "post-gt-5",
+        type: "health_observance",
+        title: "Vaccination awareness: stay protected",
+        body: "August is National Immunization Awareness Month. Baptist Memorial Hospital - Golden Triangle reminds patients to check that their vaccinations are up to date. Flu shots will be available beginning in September.",
+        cta: { label: "Learn more", url: "https://www.baptistonline.org/locations" },
+        status: "scheduled",
+        scheduled_for: "2026-08-01T14:00:00Z",
+        source: "synthetic",
       },
     ],
   },

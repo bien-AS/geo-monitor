@@ -22,4 +22,12 @@ export const queryKeys = {
     all: ["reviews"] as const,
     bySlug: (slug: string) => ["reviews", slug] as const,
   },
+  posts: {
+    all: ["posts"] as const,
+    bySlug: (slug: string) => ["posts", slug] as const,
+  },
+  localAI: {
+    all: ["local-ai"] as const,
+    bySlug: (slug: string) => ["local-ai", slug] as const,
+  },
 } as const;

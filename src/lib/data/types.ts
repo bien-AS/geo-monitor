@@ -258,13 +258,45 @@ export interface NAP {
   website?: string;
 }
 
+export type PostType =
+  "whats_new" | "event" | "offer" | "health_observance" | "provider_announcement" | "screening";
+
+export type PostStatus = "draft" | "pending_approval" | "scheduled" | "published";
+
+export interface GBPPost {
+  id: string;
+  type: PostType;
+  title: string;
+  body: string;
+  cta?: { label: string; url: string };
+  media_desc?: string;
+  image_url?: string;
+  image_label?: string;
+  status: PostStatus;
+  scheduled_for?: string;
+  published_at?: string;
+  source: DataSource;
+}
+
+export interface PostsFixture {
+  slug: string;
+  generated_at: string;
+  source: DataSource;
+  posts: GBPPost[];
+}
+
 export interface LocalAIResult {
   surface: string;
   cited: boolean | "partial";
   prompt: string;
+  position?: number | null;
   source?: DataSource;
   source_cited?: string | null;
   snippet?: string;
+  checked_at?: string;
+  cost?: number;
+  model?: string;
+  note?: string;
 }
 
 export interface LocalAIFixture {

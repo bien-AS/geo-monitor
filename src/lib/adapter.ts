@@ -15,6 +15,7 @@ import type {
   AddableCandidate,
   CompetitorsFixture,
   KeywordsFixture,
+  PostsFixture,
   DataSource,
 } from "@/lib/data/types";
 
@@ -33,6 +34,7 @@ import {
   DASHBOARD_COMPETITORS,
   DASHBOARD_KEYWORDS,
   DASHBOARD_KEYWORD_TEMPLATES,
+  DASHBOARD_POSTS,
 } from "@/lib/data/fixtures";
 import type { LocationsFile, AuditLogFile, NAPFile } from "@/lib/data/types";
 
@@ -53,6 +55,7 @@ export interface Adapter {
   getGridPreview: (slug: string) => Promise<GridPreviewFixture | null>;
   getCompetitors: (slug: string) => Promise<CompetitorsFixture | null>;
   getKeywords: (slug: string) => Promise<KeywordsFixture | null>;
+  getPosts: (slug: string) => Promise<PostsFixture | null>;
 }
 
 export function getAdapter(): Adapter {
@@ -129,6 +132,9 @@ export function getAdapter(): Adapter {
     },
     async getKeywords(slug) {
       return DASHBOARD_KEYWORDS[slug] ?? null;
+    },
+    async getPosts(slug) {
+      return DASHBOARD_POSTS[slug] ?? null;
     },
   };
 }
