@@ -555,3 +555,158 @@ export interface PaaOpportunityPool {
   location_name: string;
   items: PaaPoolItem[];
 }
+
+/* ------------------------------------------------------------------ */
+/* Action Center                                                       */
+/* ------------------------------------------------------------------ */
+
+export type RecStatus = "backlog" | "in_approval" | "published";
+
+export interface ActionRec {
+  id: string;
+  kind: "nap_drift" | "citations" | "ai_gap" | "reviews" | "gbp_content";
+  title: string;
+  location_slug: string;
+  location_name: string;
+  severity: "high" | "medium" | "low";
+  impact: string;
+  evidence: string[];
+  methodology: string;
+  generate_href: string;
+  generate_label: string;
+  status: RecStatus;
+  published_at?: string;
+  outcome?: string;
+  measure_window?: "14d" | "30d" | "90d";
+}
+
+/* ------------------------------------------------------------------ */
+/* Run receipts                                                        */
+/* ------------------------------------------------------------------ */
+
+export type RunStatus = "succeeded" | "failed" | "partial" | "running";
+export type RunTrigger = "manual" | "scheduled" | "system";
+
+export interface RunStep {
+  name: string;
+  status: RunStatus;
+  duration_s: number;
+  detail: string;
+}
+
+export interface RunLogLine {
+  ts: string;
+  level: "info" | "warn" | "error";
+  msg: string;
+}
+
+export interface RunReceipt {
+  id: string;
+  kind: string;
+  label: string;
+  trigger: RunTrigger;
+  triggered_by: string;
+  status: RunStatus;
+  started_at: string;
+  duration_s: number;
+  provider: string;
+  calls: number;
+  errors: number;
+  cost_usd: number;
+  cost_note: string;
+  location_scope: string;
+  source: DataSource;
+  steps: RunStep[];
+  artifacts: Array<{ label: string; href: string }>;
+  log: RunLogLine[];
+}
+
+export interface RunsFixture {
+  source: DataSource;
+  generated_at: string;
+  note: string;
+  runs: RunReceipt[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Reports library                                                     */
+/* ------------------------------------------------------------------ */
+
+export interface ReportArtifact {
+  id: string;
+  kind: string;
+  title: string;
+  description: string;
+  scope: string;
+  format: "PDF" | "CSV" | "XLSX" | "ZIP";
+  created_at: string;
+  created_by: string;
+  size_kb: number;
+  href: string;
+  source: DataSource;
+}
+
+export interface ReportsFixture {
+  source: DataSource;
+  generated_at: string;
+  note: string;
+  reports: ReportArtifact[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Knowledge Base / Location Profile                                   */
+/* ------------------------------------------------------------------ */
+
+export interface KBField {
+  id: string;
+  label: string;
+  value: string | null;
+  source: DataSource;
+  missingNote?: string;
+  editable?: boolean;
+}
+
+export interface KBGroup {
+  id: string;
+  title: string;
+  description: string;
+  fields: KBField[];
+}
+
+export interface KBVersion {
+  version: number;
+  label: string;
+  actor: string;
+  at: string;
+  fieldCount: number;
+}
+
+/* ------------------------------------------------------------------ */
+/* Location profile sections                                           */
+/* ------------------------------------------------------------------ */
+
+export interface ProfileField {
+  id: string;
+  label: string;
+  value: string;
+  hint?: string;
+  locked?: boolean;
+}
+
+export interface LocationProfileSections {
+  brandVoice: ProfileField[];
+  audience: ProfileField[];
+  servicesGeo: ProfileField[];
+  compliance: ProfileField[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Location file (keyword templates)                                   */
+/* ------------------------------------------------------------------ */
+
+export interface LocationsFile {
+  generated_at: string;
+  source_note: string;
+  keyword_templates: Record<string, string[]>;
+  locations: BaptistLocation[];
+}

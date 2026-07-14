@@ -38,4 +38,20 @@ export const queryKeys = {
     all: ["paa-studio"] as const,
     bySlug: (slug: string) => ["paa-studio", slug] as const,
   },
+  actionCenter: {
+    fleet: ["action-center", "fleet"] as const,
+    bySlug: (slug: string) => ["action-center", slug] as const,
+  },
+  runs: {
+    fleet: ["runs", "fleet"] as const,
+    bySlug: (slug: string) => ["runs", slug] as const,
+    byId: (id: string) => ["runs", id] as const,
+  },
+  reports: {
+    fleet: ["reports", "fleet"] as const,
+    bySlug: (slug: string) => ["reports", slug] as const,
+  },
+  locationProfile: {
+    bySlug: (slug: string) => ["location-profile", slug] as const,
+  },
 } as const;
