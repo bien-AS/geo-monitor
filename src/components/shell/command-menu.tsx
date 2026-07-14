@@ -26,6 +26,7 @@ const MODULES: Array<{ label: string; suffix: string }> = [
   { label: "Posts", suffix: "/posts" },
   { label: "Local AI", suffix: "/local-ai" },
   { label: "Competitive", suffix: "/competitive" },
+  { label: "PAA Studio", suffix: "/paa-studio" },
 ];
 
 export function CommandMenu({

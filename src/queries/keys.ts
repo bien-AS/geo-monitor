@@ -30,4 +30,12 @@ export const queryKeys = {
     all: ["local-ai"] as const,
     bySlug: (slug: string) => ["local-ai", slug] as const,
   },
+  competitive: {
+    all: ["competitive"] as const,
+    bySlug: (slug: string) => ["competitive", slug] as const,
+  },
+  paaStudio: {
+    all: ["paa-studio"] as const,
+    bySlug: (slug: string) => ["paa-studio", slug] as const,
+  },
 } as const;

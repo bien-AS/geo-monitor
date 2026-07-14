@@ -41,6 +41,7 @@ export type BaptistLocation = {
   phone?: string | null;
   primary_category?: string;
   is_claimed?: boolean;
+  source?: DataSource;
   work_time?: {
     timetable?: Record<
       string,
@@ -386,6 +387,8 @@ export interface Competitor {
   votes?: number;
   distance_mi?: number;
   map_pack_wins?: number;
+  ai_citations?: number;
+  category?: string;
   source: DataSource;
 }
 
@@ -441,4 +444,114 @@ export interface LocationsFile {
   source_note: string;
   keyword_templates: Record<string, string[]>;
   locations: BaptistLocation[];
+}
+
+/* ------------------------------------------------------------------ */
+/* Content Studio (PAA)                                               */
+/* ------------------------------------------------------------------ */
+
+export type ArticleStatus = "brief" | "drafting" | "optimizing" | "ready";
+
+export interface ContentTerm {
+  term: string;
+  weight: number;
+  required: number;
+}
+
+export interface ContentArticle {
+  id: string;
+  title: string;
+  target_keyword: string;
+  location_slug: string | null;
+  status: ArticleStatus;
+  intent: string;
+  updated_at: string;
+  author: string;
+  terms: ContentTerm[];
+  questions: string[];
+  body_md: string;
+  source: DataSource;
+}
+
+export interface ContentFixture {
+  source: DataSource;
+  generated_at: string;
+  note: string;
+  articles: ContentArticle[];
+}
+
+/* ------------------------------------------------------------------ */
+/* NW-method term models                                              */
+/* ------------------------------------------------------------------ */
+
+export interface TermModelBasicTerm {
+  term: string;
+  presence_pct: number;
+  avg_uses: number;
+  min: number;
+  max: number;
+  weight: number;
+}
+
+export interface TermModelExtendedTerm {
+  term: string;
+  presence_pct: number;
+  target: number;
+}
+
+export interface TermModelMetaTerm {
+  term: string;
+  pct: number;
+}
+
+export interface TermModel {
+  query: string;
+  slug: string;
+  location_name: string;
+  language_code: string;
+  fetched_at: string;
+  source: string;
+  serp: Array<{ position: number; url: string; title: string; domain: string }>;
+  scraped_count: number;
+  competitor_words: { median: number; p25: number; p75: number };
+  target_score: number;
+  readability_target: number;
+  basic_terms: TermModelBasicTerm[];
+  extended_terms: TermModelExtendedTerm[];
+  title_terms: TermModelMetaTerm[];
+  description_terms: TermModelMetaTerm[];
+}
+
+export interface TermModelIndexEntry {
+  slug: string;
+  query: string;
+  article_ids: string[];
+  location_slug: string | null;
+}
+
+export interface TermModelIndex {
+  generated_at: string;
+  source: string;
+  models: TermModelIndexEntry[];
+}
+
+/* ------------------------------------------------------------------ */
+/* PAA opportunity pools                                              */
+/* ------------------------------------------------------------------ */
+
+export type PaaSurfaceSource = "serp_paa" | "ai_overview" | "ai_mode";
+
+export interface PaaPoolItem {
+  question: string;
+  source_surface: PaaSurfaceSource;
+  seen_on_keyword: string;
+  rival_domain?: string | null;
+}
+
+export interface PaaOpportunityPool {
+  slug: string;
+  fetched_at: string;
+  source: string;
+  location_name: string;
+  items: PaaPoolItem[];
 }
