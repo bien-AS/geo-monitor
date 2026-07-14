@@ -15,6 +15,7 @@ import type {
   AddableCandidate,
   CompetitorsFixture,
   KeywordsFixture,
+  DataSource,
 } from "@/lib/data/types";
 
 import {
@@ -77,10 +78,25 @@ export function getAdapter(): Adapter {
       return DASHBOARD_LVI;
     },
     async getNAP() {
+      const canonical: Record<
+        string,
+        { name: string; address: string; phone: string; website?: string; source: DataSource }
+      > = {};
+      for (const loc of DASHBOARD_LOCATIONS) {
+        if (loc.name && loc.address && loc.phone) {
+          canonical[loc.slug] = {
+            name: loc.name,
+            address: `${loc.address}, ${loc.city}, ${loc.state}`,
+            phone: loc.phone,
+            website: loc.website ?? undefined,
+            source: "synthetic" as const,
+          };
+        }
+      }
       return {
         generated_at: "2026-07-10",
         source_note: "Canonical NAP + observed drifts from DataForSEO",
-        canonical: {},
+        canonical,
         drifts: DASHBOARD_NAP.drifts,
       };
     },

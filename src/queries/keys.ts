@@ -14,4 +14,12 @@ export const queryKeys = {
     all: ["gbp-health"] as const,
     bySlug: (slug: string) => ["gbp-health", slug] as const,
   },
+  citations: {
+    all: ["citations"] as const,
+    bySlug: (slug: string) => ["citations", slug] as const,
+  },
+  reviews: {
+    all: ["reviews"] as const,
+    bySlug: (slug: string) => ["reviews", slug] as const,
+  },
 } as const;

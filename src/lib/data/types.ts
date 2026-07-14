@@ -100,9 +100,30 @@ export interface NAPFile {
   drifts: NAPDrift[];
 }
 
-/* ------------------------------------------------------------------ */
-/* GBP audit (Search Atlas)                                           */
-/* ------------------------------------------------------------------ */
+export type ReviewSentiment = "positive" | "neutral" | "negative" | "critical";
+export type ReviewStatus = "unanswered" | "draft" | "responded" | "handoff";
+
+export interface Review {
+  id: string;
+  platform: "google" | "healthgrades" | "vitals" | "facebook";
+  rating: number;
+  reviewer: { name: string; localGuide?: boolean };
+  date: string;
+  text: string;
+  sentiment: ReviewSentiment;
+  topics: string[];
+  status: ReviewStatus;
+  reply?: { text: string; date: string; author: string };
+  draft?: { text: string; phi_flags: string[] };
+  source: DataSource;
+}
+
+export interface ReviewSummary {
+  total: number;
+  avg_rating: number | null;
+  response_rate: number;
+  monthly: Record<string, { count: number; avg: number }>;
+}
 
 export interface AuditCategoryScore {
   score: number | null;
@@ -173,8 +194,11 @@ export interface ReviewRow {
 }
 
 export interface ReviewsFixture {
+  slug: string;
+  source: DataSource;
+  generated_at: string;
   summary: ReviewSummary;
-  reviews: ReviewRow[];
+  reviews: Review[];
 }
 
 export interface CitationsBreakdown {
@@ -185,6 +209,19 @@ export interface CitationsBreakdown {
 }
 
 export type CitationStatus = "present" | "mismatch" | "missing" | "duplicate";
+export type CitationPipelineStatus =
+  "recommended" | "queued" | "ordered" | "submitted" | "live" | "indexing" | "index_checking";
+export type IndexationStatus = "indexed" | "not_indexed" | "not_checked" | "checking";
+
+export interface CitationAggregator {
+  id: string;
+  name: string;
+  tagline: string;
+  bl_publisher: string;
+  status: "synced" | "available";
+  last_synced: string | null;
+  source: DataSource;
+}
 
 export interface CitationRow {
   directory: string;
@@ -199,6 +236,8 @@ export interface CitationRow {
   last_checked: string;
   delta_since_last: "stable" | "changed" | "fixed";
   source: DataSource;
+  pipeline_status?: CitationPipelineStatus;
+  indexation?: IndexationStatus;
   listing_url?: string;
 }
 
@@ -206,8 +245,17 @@ export interface CitationsFixture {
   slug?: string;
   generated_at?: string;
   source?: DataSource;
+  catalog_note?: string;
   breakdown: CitationsBreakdown;
+  aggregators?: CitationAggregator[];
   rows?: CitationRow[];
+}
+
+export interface NAP {
+  name: string;
+  address: string;
+  phone: string;
+  website?: string;
 }
 
 export interface LocalAIResult {
