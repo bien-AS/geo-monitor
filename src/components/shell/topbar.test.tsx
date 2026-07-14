@@ -22,6 +22,10 @@ vi.mock("@/components/shell/notification-bell", () => ({
   ),
 }));
 
+vi.mock("@/components/shell/role-switcher", () => ({
+  RoleSwitcher: () => <div data-testid="role-switcher" />,
+}));
+
 const LOCATIONS: LocationNavItem[] = [
   { slug: "baptist-memphis", name: "Baptist Memphis", city: "Memphis, TN" },
 ];
@@ -64,10 +68,9 @@ describe("Topbar", () => {
     expect(screen.getByText("ZB")).toBeDefined();
   });
 
-  it("does not render View As role switcher", () => {
+  it("renders the role switcher", () => {
     render(<Topbar locations={LOCATIONS} />);
-    expect(screen.queryByText("View as role")).toBeNull();
-    expect(screen.queryByText("Full access — operate and approve")).toBeNull();
+    expect(screen.getByTestId("role-switcher")).toBeDefined();
   });
 
   it("renders account menu with user name and organization", () => {
