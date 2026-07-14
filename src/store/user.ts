@@ -12,6 +12,7 @@ export interface StubUser {
 interface UserState {
   user: StubUser | null;
   setUser: (user: StubUser) => void;
+  setRole: (role: Role) => void;
 }
 
 const DEFAULT_USER: StubUser = {
@@ -25,4 +26,5 @@ const DEFAULT_USER: StubUser = {
 export const useUserStore = create<UserState>((set) => ({
   user: DEFAULT_USER,
   setUser: (user) => set({ user }),
+  setRole: (role) => set((state) => (state.user ? { user: { ...state.user, role } } : state)),
 }));

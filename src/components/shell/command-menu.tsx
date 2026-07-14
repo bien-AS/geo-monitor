@@ -4,6 +4,7 @@ import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Icons } from "@/lib/icons";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -53,55 +54,57 @@ export function CommandMenu({
       title="Search"
       description="Jump to a screen or location"
     >
-      <CommandInput placeholder="Search locations and screens…" />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Screens">
-          <CommandItem onSelect={() => go("/local")}>
-            <Icons.dashboard className="size-4" />
-            Dashboard
-          </CommandItem>
-          {current &&
-            MODULES.map((m) => (
+      <Command>
+        <CommandInput placeholder="Search locations and screens…" />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Screens">
+            <CommandItem onSelect={() => go("/local")}>
+              <Icons.dashboard className="size-4" />
+              Dashboard
+            </CommandItem>
+            {current &&
+              MODULES.map((m) => (
+                <CommandItem
+                  key={m.suffix || "overview"}
+                  onSelect={() => go(`/locations/${current.slug}${m.suffix}`)}
+                >
+                  <Icons.building className="size-4" />
+                  {m.label}
+                  <span className="text-text-tertiary ml-auto text-xs">
+                    {shortLocationName(current.name)}
+                  </span>
+                </CommandItem>
+              ))}
+            <CommandItem onSelect={() => go("/settings")}>
+              <Icons.settings className="size-4" />
+              Settings
+            </CommandItem>
+            <CommandItem onSelect={() => go("/settings/users")}>
+              <Icons.usersGroup className="size-4" />
+              Users &amp; roles
+            </CommandItem>
+            <CommandItem onSelect={() => go("/learn")}>
+              <Icons.graduationCap className="size-4" />
+              Learning Hub
+            </CommandItem>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup heading="Locations">
+            {locations.map((loc) => (
               <CommandItem
-                key={m.suffix || "overview"}
-                onSelect={() => go(`/locations/${current.slug}${m.suffix}`)}
+                key={loc.slug}
+                value={`${loc.name} ${loc.city}`}
+                onSelect={() => go(`/locations/${loc.slug}`)}
               >
-                <Icons.building className="size-4" />
-                {m.label}
-                <span className="text-text-tertiary ml-auto text-xs">
-                  {shortLocationName(current.name)}
-                </span>
+                <Icons.mapPin className="size-4" />
+                <span className="min-w-0 flex-1 truncate">{shortLocationName(loc.name)}</span>
+                <span className="text-text-tertiary text-xs">{loc.city}</span>
               </CommandItem>
             ))}
-          <CommandItem onSelect={() => go("/settings")}>
-            <Icons.settings className="size-4" />
-            Settings
-          </CommandItem>
-          <CommandItem onSelect={() => go("/settings/users")}>
-            <Icons.usersGroup className="size-4" />
-            Users &amp; roles
-          </CommandItem>
-          <CommandItem onSelect={() => go("/learn")}>
-            <Icons.graduationCap className="size-4" />
-            Learning Hub
-          </CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Locations">
-          {locations.map((loc) => (
-            <CommandItem
-              key={loc.slug}
-              value={`${loc.name} ${loc.city}`}
-              onSelect={() => go(`/locations/${loc.slug}`)}
-            >
-              <Icons.mapPin className="size-4" />
-              <span className="min-w-0 flex-1 truncate">{shortLocationName(loc.name)}</span>
-              <span className="text-text-tertiary text-xs">{loc.city}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      </CommandList>
+          </CommandGroup>
+        </CommandList>
+      </Command>
     </CommandDialog>
   );
 }
