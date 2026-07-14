@@ -252,7 +252,7 @@ function NavItem({
       className={cn(
         "relative flex h-9 items-center gap-2.5 rounded-md px-3 text-[13px] font-medium transition-colors",
         active
-          ? "bg-sidebar-active text-white"
+          ? "bg-sidebar-accent text-white"
           : outOfScope
             ? "text-sidebar-foreground/55 hover:text-sidebar-foreground hover:bg-white/10"
             : "text-sidebar-foreground/80 hover:text-sidebar-foreground hover:bg-white/10",
@@ -261,7 +261,7 @@ function NavItem({
       {active && (
         <span
           aria-hidden
-          className="bg-sidebar-accent absolute inset-y-1 left-0 w-[3px] rounded-r"
+          className="bg-sidebar-primary absolute inset-y-1 left-0 w-[3px] rounded-r"
         />
       )}
       <Icon className="size-4 shrink-0" />
@@ -307,15 +307,15 @@ export function Sidebar({ locations }: { locations: LocationNavItem[] }) {
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 pb-4">
-        <p className="eyebrow text-sidebar-muted px-3 pt-2 pb-1.5">Local</p>
+        <p className="eyebrow text-sidebar-foreground/70 px-3 pt-2 pb-1.5">Local</p>
         {renderGroup(LOCAL_NAV)}
 
-        <p className="eyebrow text-sidebar-muted px-3 pt-5 pb-1.5">System</p>
+        <p className="eyebrow text-sidebar-foreground/70 px-3 pt-5 pb-1.5">System</p>
         {renderGroup(SYSTEM_NAV)}
 
         {role === "operator" && (
           <>
-            <p className="eyebrow text-sidebar-muted px-3 pt-5 pb-1.5">Admin · agency</p>
+            <p className="eyebrow text-sidebar-foreground/70 px-3 pt-5 pb-1.5">Admin · agency</p>
             {renderGroup(ADMIN_NAV)}
           </>
         )}
@@ -348,7 +348,7 @@ export function Sidebar({ locations }: { locations: LocationNavItem[] }) {
             <button
               type="submit"
               aria-label="Sign out"
-              className="text-sidebar-muted hover:text-sidebar-foreground flex size-8 items-center justify-center rounded-md transition-colors hover:bg-white/10"
+              className="text-sidebar-foreground/70 hover:text-sidebar-foreground flex size-8 items-center justify-center rounded-md transition-colors hover:bg-white/10"
             >
               <Icons.logOut className="size-4" />
             </button>

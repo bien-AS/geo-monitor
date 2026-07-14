@@ -12,3 +12,8 @@ export const ROLE_LABEL: Record<Role, string> = {
   operator: "Operator",
   "client-viewer": "Baptist Viewer",
 };
+
+export const ROLE_DESCRIPTION: Record<Role, string> = {
+  operator: "Full access — operate and approve",
+  "client-viewer": "Read-only — what Baptist sees",
+};
