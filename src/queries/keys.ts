@@ -54,4 +54,7 @@ export const queryKeys = {
   locationProfile: {
     bySlug: (slug: string) => ["location-profile", slug] as const,
   },
+  notifications: {
+    all: ["notifications"] as const,
+  },
 } as const;

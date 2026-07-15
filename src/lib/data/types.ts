@@ -581,6 +581,36 @@ export interface ActionRec {
 }
 
 /* ------------------------------------------------------------------ */
+/* Notifications                                                       */
+/* ------------------------------------------------------------------ */
+
+export type NotificationSeverity = "info" | "success" | "warning" | "error";
+
+export type NotificationKind =
+  | "rank_drop"
+  | "review"
+  | "nap_drift"
+  | "run"
+  | "ai_visibility"
+  | "citations"
+  | "posts"
+  | "gbp_health";
+
+export interface AppNotification {
+  id: string;
+  kind: NotificationKind;
+  severity: NotificationSeverity;
+  title: string;
+  body: string;
+  ts: string;
+  href: string;
+  location_slug: string | null;
+  /** "operator" rows are agency-only; "all" rows render for every role. */
+  audience: "all" | "operator";
+  source: DataSource;
+}
+
+/* ------------------------------------------------------------------ */
 /* Run receipts                                                        */
 /* ------------------------------------------------------------------ */
 
