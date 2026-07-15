@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Icons } from "@/lib/icons";
+import { useNotificationsStore } from "@/store/notifications";
 import { useRole } from "./role-store";
 
 export interface BellItem {
@@ -11,8 +12,11 @@ export interface BellItem {
 
 export function NotificationBell({ items }: { items: BellItem[] }) {
   const role = useRole();
+  const readIds = useNotificationsStore((s) => s.readIds);
 
-  const unread = items.filter((n) => n.audience === "all" || role === "operator").length;
+  const unread = items.filter(
+    (n) => (n.audience === "all" || role === "operator") && !readIds.includes(n.id),
+  ).length;
 
   return (
     <Link

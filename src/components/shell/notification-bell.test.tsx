@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { NotificationBell, type BellItem } from "@/components/shell/notification-bell";
+import { useNotificationsStore } from "@/store/notifications";
 import { useUserStore } from "@/store/user";
 
 const ITEMS: BellItem[] = [
@@ -10,6 +11,10 @@ const ITEMS: BellItem[] = [
 ];
 
 describe("NotificationBell", () => {
+  beforeEach(() => {
+    useNotificationsStore.setState({ readIds: [] });
+  });
+
   it("counts all items as unread for the operator role", () => {
     useUserStore.setState({
       user: {
@@ -69,5 +74,20 @@ describe("NotificationBell", () => {
     render(<NotificationBell items={[]} />);
     expect(screen.getByLabelText("Notifications — 0 unread")).toBeDefined();
     expect(screen.queryByText("0")).toBeNull();
+  });
+
+  it("excludes items already marked read from the unread count", () => {
+    useUserStore.setState({
+      user: {
+        id: "u1",
+        name: "Zach B.",
+        initials: "ZB",
+        role: "operator",
+        organization: "Baptist Memorial Health Care",
+      },
+    });
+    useNotificationsStore.setState({ readIds: ["n1", "n2"] });
+    render(<NotificationBell items={ITEMS} />);
+    expect(screen.getByLabelText("Notifications — 1 unread")).toBeDefined();
   });
 });
