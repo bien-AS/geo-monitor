@@ -51,6 +51,9 @@ export const queryKeys = {
     fleet: ["reports", "fleet"] as const,
     bySlug: (slug: string) => ["reports", slug] as const,
   },
+  spotCheck: {
+    fleet: ["spot-check", "fleet"] as const,
+  },
   locationProfile: {
     bySlug: (slug: string) => ["location-profile", slug] as const,
   },
