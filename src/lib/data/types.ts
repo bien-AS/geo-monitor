@@ -17,6 +17,23 @@ export type AuditLogEntry = {
   location_slug?: string;
 };
 
+export type WorkspaceUserRole = "as_admin" | "as_staff" | "client_admin" | "client_user";
+export type WorkspaceUserStatus = "active" | "pending";
+
+export type WorkspaceUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: WorkspaceUserRole;
+  status: WorkspaceUserStatus;
+  last_active?: string;
+  joined_at?: string;
+  invited_at?: string;
+  invited_by?: string;
+  invite_token?: string;
+  source: DataSource;
+};
+
 export type ListingType = "facility" | "department" | "practitioner";
 
 export type BaptistLocation = {

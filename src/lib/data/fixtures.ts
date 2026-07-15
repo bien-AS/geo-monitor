@@ -13,6 +13,7 @@ import type {
   GridSnapshot,
   GeoGridFixture,
   AuditLogEntry,
+  WorkspaceUser,
   AddableCandidate,
   CompetitorsFixture,
   KeywordsFixture,
@@ -2542,6 +2543,70 @@ export const STUB_NOTIFICATIONS: BellItem[] = DASHBOARD_NOTIFICATIONS.map((n) =>
   id: n.id,
   audience: n.audience,
 }));
+
+export const DASHBOARD_USERS: WorkspaceUser[] = [
+  {
+    id: "u-zach",
+    name: "Zach B.",
+    email: "zach@agency.demo",
+    role: "as_admin",
+    status: "active",
+    last_active: "2026-07-02T14:20:00Z",
+    joined_at: "2026-05-01T00:00:00Z",
+    source: "synthetic",
+  },
+  {
+    id: "u-mitchell",
+    name: "Mitchell R.",
+    email: "mitchell@agency.demo",
+    role: "as_staff",
+    status: "active",
+    last_active: "2026-07-01T22:05:00Z",
+    joined_at: "2026-05-06T00:00:00Z",
+    source: "synthetic",
+  },
+  {
+    id: "u-dana",
+    name: "Dana K.",
+    email: "dana@agency.demo",
+    role: "as_staff",
+    status: "active",
+    last_active: "2026-06-30T16:40:00Z",
+    joined_at: "2026-05-12T00:00:00Z",
+    source: "synthetic",
+  },
+  {
+    id: "u-karen",
+    name: "Karen W.",
+    email: "karen.w@bmhcc.demo",
+    role: "client_admin",
+    status: "active",
+    last_active: "2026-07-01T19:15:00Z",
+    joined_at: "2026-05-20T00:00:00Z",
+    source: "synthetic",
+  },
+  {
+    id: "u-james",
+    name: "James T.",
+    email: "james.t@bmhcc.demo",
+    role: "client_user",
+    status: "active",
+    last_active: "2026-06-28T13:00:00Z",
+    joined_at: "2026-06-02T00:00:00Z",
+    source: "synthetic",
+  },
+  {
+    id: "u-priya",
+    name: "Priya S.",
+    email: "priya.s@bmhcc.demo",
+    role: "client_user",
+    status: "pending",
+    invited_at: "2026-06-29T10:30:00Z",
+    invited_by: "Karen W.",
+    invite_token: "seed-priya",
+    source: "synthetic",
+  },
+];
 
 export const DASHBOARD_KEYWORD_TEMPLATES: Record<string, string[]> = {
   primary_care: [
