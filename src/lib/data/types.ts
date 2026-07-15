@@ -757,3 +757,75 @@ export interface LocationsFile {
   keyword_templates: Record<string, string[]>;
   locations: BaptistLocation[];
 }
+
+/* ------------------------------------------------------------------ */
+/* Learning Hub                                                        */
+/* ------------------------------------------------------------------ */
+
+export interface GlossaryLink {
+  label: string;
+  href: string;
+}
+
+export interface GlossaryEntry {
+  /** Stable anchor id — used for #anchors and seeAlso references. */
+  id: string;
+  term: string;
+  /** One-sentence plain-language definition. */
+  short: string;
+  /** 2–4 sentence friendly explanation with a concrete clinic example. */
+  long: string;
+  /** ids of related entries. */
+  seeAlso: string[];
+  whereYouSeeIt: GlossaryLink[];
+}
+
+export type Inline = string | { text: string; href: string };
+
+export type ArticleBlock =
+  | { kind: "h2"; text: string }
+  | { kind: "h3"; text: string }
+  | { kind: "p"; body: Inline[] }
+  | { kind: "steps"; items: Inline[][] }
+  | { kind: "bullets"; items: Inline[][] }
+  | { kind: "note"; body: Inline[] };
+
+export const HELP_CATEGORIES = [
+  "Getting Started",
+  "Rankings & Visibility",
+  "Reviews & Content",
+  "Citations & Listings",
+  "Reports & Admin",
+] as const;
+
+export type HelpCategory = (typeof HELP_CATEGORIES)[number];
+
+export interface HelpArticle {
+  slug: string;
+  title: string;
+  category: HelpCategory;
+  /** One-line summary shown in the wiki list. */
+  summary: string;
+  readMinutes: number;
+  /** Glossary entry ids for the "Related terms" footer. */
+  relatedTerms: string[];
+  blocks: ArticleBlock[];
+}
+
+export type TutorialAudience = "Everyone" | "Clinic staff" | "Clinic admin" | "Agency";
+
+export interface Tutorial {
+  id: string;
+  title: string;
+  /** Two-line description of what the recording will cover. */
+  description: string;
+  /** Placeholder runtime, e.g. "~4 min" — rendered in mono. */
+  duration: string;
+  audience: TutorialAudience;
+}
+
+export interface TutorialGroup {
+  group: string;
+  blurb: string;
+  videos: Tutorial[];
+}

@@ -63,4 +63,10 @@ export const queryKeys = {
   users: {
     all: ["users"] as const,
   },
+  learn: {
+    glossary: ["learn", "glossary"] as const,
+    help: ["learn", "help"] as const,
+    helpBySlug: (slug: string) => ["learn", "help", slug] as const,
+    tutorials: ["learn", "tutorials"] as const,
+  },
 } as const;
