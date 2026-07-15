@@ -39,7 +39,6 @@ export function SurfaceDotStrip({
       aria-hidden
     >
       {CHATBOT_SURFACES.map(dot)}
-      {/* 12px category divider */}
       <span className="w-3" />
       {SEARCH_FEATURE_SURFACES.map(dot)}
     </span>

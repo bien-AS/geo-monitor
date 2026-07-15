@@ -47,7 +47,6 @@ export function SurfaceSelector({
           />
         ))}
       </div>
-      {/* canonical 12px category divider */}
       <div
         aria-hidden
         className="h-3"
@@ -119,7 +118,6 @@ function SurfaceCard({
           ${surface.cost.toFixed(3)}/call
         </span>
       </span>
-      {/* toggle visual — state carried by aria-pressed on the card */}
       <span
         aria-hidden
         className={cn(
